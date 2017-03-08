@@ -19,5 +19,12 @@ class TransactionRecord {
         this.item = item;
     }
 
+    public double getPrice() {
+        return this.price;
+    }
+
+    public double getWeight() {
+        return item.getWeight();
+    }
 
 }

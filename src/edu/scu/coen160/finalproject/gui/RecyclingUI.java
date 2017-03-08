@@ -1,4 +1,6 @@
 package edu.scu.coen160.finalproject.gui;
 
-public class RecyclingUI {
+import javax.swing.*;
+
+public class RecyclingUI extends JFrame {
 }

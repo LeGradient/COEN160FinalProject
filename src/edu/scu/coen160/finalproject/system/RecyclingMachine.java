@@ -51,7 +51,7 @@ public class RecyclingMachine {
     // OTHER METHODS
 
     public void recycleItem(RecyclableItem item) {
-        double price = getPrice(item.getMaterial());
+        double price = getPrice(item.getMaterial()) * item.getWeight();
         TransactionRecord record = new TransactionRecord(Date.from(Instant.now()), item, price);
         if (this.isSession) {
             this.session.add(record);
@@ -70,7 +70,7 @@ public class RecyclingMachine {
     }
 
     public void submitSession() {
-        assert this.isSession = true;
+        assert this.isSession;
         for (TransactionRecord record : session) {
             // TODO: write the record to the database
         }
@@ -81,6 +81,36 @@ public class RecyclingMachine {
         this.capacity = 0;
         TransactionRecord record = new TransactionRecord(Date.from(Instant.now()), null, 0);
         // TODO: write the record to the database
+    }
+
+    // payOut for single item
+    public double payOut(double price) {
+        double owedValue = price;
+        if (this.money - owedValue < 0) {
+            payCoupon(owedValue - this.money);
+            owedValue = this.money;
+            this.money = 0;
+            return owedValue;
+        }
+
+        this.money -= owedValue;
+
+        return owedValue;
+    }
+
+    // payOut for a session
+    public double payOut () {
+        assert this.isSession ;
+        double owedValue = 0;
+
+        for (TransactionRecord record : session) {
+            owedValue += record.getPrice();
+        }
+        return payOut(owedValue);
+    }
+
+    private void payCoupon(double amount) {
+        // TODO pay out a coupon of value amount
     }
 
 }

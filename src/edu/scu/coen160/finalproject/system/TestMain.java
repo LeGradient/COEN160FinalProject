@@ -17,20 +17,13 @@ public class TestMain {
             System.out.println(e);
         }
 
-        // print the working directory
-        try {
-            System.out.println(new File(".").getCanonicalPath());
-        } catch (IOException e) {
-            System.out.println(e);
-        }
-
         // verify that a SQLITE database exists in the expected directory
         File db = new File("TransactionRecords.db");
         assert(db.exists());
-        try (Connection connection = DriverManager.getConnection("jdbc:sqlite:TransactionRecords.db")) {
-            // do nothing
-        } catch (SQLException e) {
-            System.out.println(e);
+
+        // instantiate some RCMs
+        for (int i = 0; i < 10; i++) {
+            RecyclingMachine rcm = new RecyclingMachine(null, 0, 0);
         }
     }
 }

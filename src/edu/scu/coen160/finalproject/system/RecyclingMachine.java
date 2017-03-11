@@ -52,8 +52,8 @@ public class RecyclingMachine {
         // create a database table for storing transaction records
         try (Connection connection = DriverManager.getConnection(TransactionRecord.database)) {
             Statement stmt = connection.createStatement();
-            String sql = String.format(TransactionRecord.newTable, this.getTableName());
-            stmt.execute(sql);
+            String sql = String.format(TransactionRecord.newTable, this.getTableName(), this.getTableName());
+            stmt.executeUpdate(sql);
         } catch (SQLException e) {
             System.out.println(e);
         }

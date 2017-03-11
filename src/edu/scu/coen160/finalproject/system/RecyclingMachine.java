@@ -1,5 +1,9 @@
 package edu.scu.coen160.finalproject.system;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Date;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -25,6 +29,7 @@ public class RecyclingMachine {
 
     // GETTERS & SETTERS
 
+    public String getTableName() { return "RCM" + ((Integer)id).toString(); }
     public String getLocation() { return this.location; }
     public int getId() { return this.id; }
     public double getCapacity() { return this.capacity; }
@@ -45,6 +50,14 @@ public class RecyclingMachine {
         this.prices = prices;
 
         this.session = new ArrayList<>();
+
+        // create a database table for storing transaction records
+        try (Connection connection = DriverManager.getConnection(TransactionRecord.database)) {
+            Statement stmt = connection.createStatement();
+            String sql = "";    // TODO: finish
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
     }
 
 

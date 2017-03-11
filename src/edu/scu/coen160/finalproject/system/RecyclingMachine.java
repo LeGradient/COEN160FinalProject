@@ -54,7 +54,8 @@ public class RecyclingMachine {
         // create a database table for storing transaction records
         try (Connection connection = DriverManager.getConnection(TransactionRecord.database)) {
             Statement stmt = connection.createStatement();
-            String sql = "";    // TODO: finish
+            String sql = String.format(TransactionRecord.newTable, this.getTableName());
+            stmt.execute(sql);
         } catch (SQLException e) {
             System.out.println(e);
         }
@@ -65,7 +66,7 @@ public class RecyclingMachine {
 
     public void recycleItem(RecyclableItem item) {
         double price = getPrice(item.getMaterial()) * item.getWeight();
-        TransactionRecord record = new TransactionRecord(Date.from(Instant.now()), item, price);
+        TransactionRecord record = new TransactionRecord(item, price);
         if (this.isSession) {
             this.session.add(record);
         } else {
@@ -92,7 +93,7 @@ public class RecyclingMachine {
 
     public void empty() {
         this.capacity = 0;
-        TransactionRecord record = new TransactionRecord(Date.from(Instant.now()), null, 0);
+        TransactionRecord record = new TransactionRecord(null, 0);
         // TODO: write the record to the database
     }
 

@@ -4,44 +4,51 @@ import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Date;
 
 // not sure if this should be public or package protected
 class TransactionRecord {
     private RecyclableItem item;
     private double price;
-    private Date timestamp;
-
-    private boolean emptyTransaction = false;
 
     public static String database = "jdbc:sqlite:TransactionRecords.db";
-    public static String newTable = "CREATE TABLE %s (" +
-                                        "item VARCHAR(20)," +
+    public static String newTable = "DROP TABLE IF EXISTS %s;" +
+                                    "CREATE TABLE %s (" +
+                                        "material VARCHAR(15)," +
+                                        "weight NUMBER(4,2)," +
                                         "price NUMBER(4,2)," +
-                                        "date DATETIME" +
+                                        "date DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL" +
                                     ");";
 
-    public TransactionRecord(Date date, RecyclableItem item, double price) {
-        this.timestamp = date;
-        if (price == -1.0 || item == null)
-            emptyTransaction = true;
 
-        this.price = price;
+    // GETTERS & SETTERS
+
+    public double getPrice() { return this.price; }
+    public double getWeight() { return item.getWeight(); }
+
+
+    // CONSTRUCTOR
+
+    public TransactionRecord(RecyclableItem item, double price) {
         this.item = item;
+        this.price = price;
     }
 
-    public double getPrice() {
-        return this.price;
-    }
 
-    public double getWeight() {
-        return item.getWeight();
-    }
+    // OTHER METHODS
 
-    public void writeToDB(String tableName) {
+    public void writeToTable(String tableName) {
         try (Connection connection = DriverManager.getConnection(database)) {
             Statement stmt = connection.createStatement();
-            String sql = "INSERT INTO " + tableName + " VALUES ";   // TODO: insert values into the table
+            if (this.item == null) {
+                String sql = "INSERT INTO " + tableName + " VALUES (" + this.item.getMaterial() + "," +
+                        this.item.getWeight() + "," +
+                        this.price + ");";
+            } else {
+                String sql = "INSERT INTO " + tableName + " VALUES (" + this.item.getMaterial() + "," +
+                                                                    this.item.getWeight() + "," +
+                                                                    this.price + ");";
+            }
+            // TODO: execute the statement
         } catch (SQLException e) {
             System.out.println(e);
         }

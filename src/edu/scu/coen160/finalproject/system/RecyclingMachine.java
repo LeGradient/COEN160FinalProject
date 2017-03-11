@@ -111,7 +111,7 @@ public class RecyclingMachine {
     }
 
     // payOut for a session
-    public double payOut () {
+    public double payOut() {
         assert this.isSession;
         double owedValue = 0;
 

@@ -13,9 +13,9 @@ class TransactionRecord {
     public static String database = "jdbc:sqlite:TransactionRecords.db";
     public static String newTable = "DROP TABLE IF EXISTS %s;" +
                                     "CREATE TABLE %s (" +
-                                        "material VARCHAR(15)," +
-                                        "weight NUMBER(4,2)," +
-                                        "price NUMBER(4,2)," +
+                                        "material VARCHAR(15) DEFAULT NULL," +
+                                        "weight NUMBER(4,2) DEFAULT NULL," +
+                                        "price NUMBER(4,2) DEFAULT NULL," +
                                         "date DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL" +
                                     ");";
 
@@ -41,17 +41,19 @@ class TransactionRecord {
             String sql;
             Statement stmt = connection.createStatement();
             if (this.item == null) {
-                sql = "INSERT INTO " + tableName + " VALUES (" + this.item.getMaterial() + "," +
-                                                                    this.item.getWeight() + "," +
-                                                                    this.price + ");";
+                sql = "INSERT INTO " + tableName + " DEFAULT VALUES;";
             } else {
-                sql = "INSERT INTO " + tableName + " VALUES (" + this.item.getMaterial() + "," +
+                sql = "INSERT INTO " + tableName + " (material, weight, price) VALUES ('" + this.item.getMaterial() + "'," +
                                                                     this.item.getWeight() + "," +
                                                                     this.price + ");";
             }
             int numRows = stmt.executeUpdate(sql);
             assert(numRows == 1);
         } catch (SQLException e) {
+            StackTraceElement[] trace = e.getStackTrace();
+            for (StackTraceElement elt : trace) {
+                System.out.println(elt);
+            }
             System.out.println(e);
         }
     }

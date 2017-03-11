@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 public class TestMain {
     public static void main(String[] args) {
@@ -21,9 +22,12 @@ public class TestMain {
         File db = new File("TransactionRecords.db");
         assert(db.exists());
 
-        // instantiate some RCMs
-        for (int i = 0; i < 10; i++) {
-            RecyclingMachine rcm = new RecyclingMachine(null, 0, 0);
-        }
+        // instantiate an RCM and test stuff
+        HashMap<String, Double> prices = new HashMap<>();
+        prices.put("plastic", 10.0);
+        RecyclingMachine rcm = new RecyclingMachine(prices, 1000, 1000);
+        RecyclableItem item = new RecyclableItem(5, "plastic");
+        rcm.recycleItem(item);
+        rcm.empty();
     }
 }

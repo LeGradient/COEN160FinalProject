@@ -27,7 +27,7 @@ public class RecyclingMachine {
 
     // GETTERS & SETTERS
 
-    private String getTableName() { return "RCM" + ((Integer)id).toString(); }
+    public String getTableName() { return "RCM" + ((Integer)id).toString(); }
     public String getLocation() { return this.location; }
     public int getId() { return this.id; }
     public double getCapacity() { return this.capacity; }

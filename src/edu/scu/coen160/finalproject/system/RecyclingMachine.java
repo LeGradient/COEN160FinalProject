@@ -4,8 +4,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Date;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -114,7 +112,7 @@ public class RecyclingMachine {
 
     // payOut for a session
     public double payOut () {
-        assert this.isSession ;
+        assert this.isSession;
         double owedValue = 0;
 
         for (TransactionRecord record : session) {

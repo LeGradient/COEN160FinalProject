@@ -70,7 +70,7 @@ public class RecyclingMachine {
         if (this.isSession) {
             this.session.add(record);
         } else {
-            // TODO: write the record to the database
+            record.writeToTable(this.getTableName());
         }
     }
 
@@ -86,7 +86,7 @@ public class RecyclingMachine {
     public void submitSession() {
         assert this.isSession;
         for (TransactionRecord record : session) {
-            // TODO: write the record to the database
+            record.writeToTable(this.getTableName());
         }
         this.isSession = false;
     }
@@ -94,7 +94,7 @@ public class RecyclingMachine {
     public void empty() {
         this.capacity = 0;
         TransactionRecord record = new TransactionRecord(null, 0);
-        // TODO: write the record to the database
+        record.writeToTable(this.getTableName());
     }
 
     // payOut for single item

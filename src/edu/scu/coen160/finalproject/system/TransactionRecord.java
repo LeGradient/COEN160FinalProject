@@ -38,17 +38,19 @@ class TransactionRecord {
 
     public void writeToTable(String tableName) {
         try (Connection connection = DriverManager.getConnection(database)) {
+            String sql;
             Statement stmt = connection.createStatement();
             if (this.item == null) {
-                String sql = "INSERT INTO " + tableName + " VALUES (" + this.item.getMaterial() + "," +
-                        this.item.getWeight() + "," +
-                        this.price + ");";
+                sql = "INSERT INTO " + tableName + " VALUES (" + this.item.getMaterial() + "," +
+                                                                    this.item.getWeight() + "," +
+                                                                    this.price + ");";
             } else {
-                String sql = "INSERT INTO " + tableName + " VALUES (" + this.item.getMaterial() + "," +
+                sql = "INSERT INTO " + tableName + " VALUES (" + this.item.getMaterial() + "," +
                                                                     this.item.getWeight() + "," +
                                                                     this.price + ");";
             }
-            // TODO: execute the statement
+            int numRows = stmt.executeUpdate(sql);
+            assert(numRows == 1);
         } catch (SQLException e) {
             System.out.println(e);
         }

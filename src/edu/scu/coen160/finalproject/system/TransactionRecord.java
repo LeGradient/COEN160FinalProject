@@ -49,6 +49,8 @@ class TransactionRecord {
             }
             int numRows = stmt.executeUpdate(sql);
             assert(numRows == 1);
+            stmt.close();
+            connection.close();
         } catch (SQLException e) {
             StackTraceElement[] trace = e.getStackTrace();
             for (StackTraceElement elt : trace) {

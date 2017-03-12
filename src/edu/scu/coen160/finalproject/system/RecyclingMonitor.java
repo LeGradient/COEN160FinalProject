@@ -20,16 +20,15 @@ public class RecyclingMonitor {
     // OTHER METHODS
 
     public Date lastEmptied(int index) {
+        Date result = null;
         try (Connection connection = DriverManager.getConnection(TransactionRecord.database)) {
             Statement stmt = connection.createStatement();
             String sql = "SELECT MAX(date) FROM " + machines.get(index).getTableName() + ";";
-            ResultSet result = stmt.executeQuery(sql);
-            // TODO: do something with the results
-            stmt.close();
-            connection.close();
-            // TODO: return something
+            ResultSet resultset = stmt.executeQuery(sql);
+            result = resultset.getDate(1);  // SQL result columns are 1-indexed
         } catch (SQLException e) {
-            // TODO: construct a runtime exception and throw it?
+            throw new RuntimeException(e);
         }
+        return result;
     }
 }

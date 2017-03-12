@@ -19,6 +19,7 @@ public class RecyclingMachine {
     private String location;
     private int id;
     private double capacity;
+    private double weight;
     private double money;
     private HashMap<String, Double> prices;
     private boolean isSession;
@@ -31,9 +32,11 @@ public class RecyclingMachine {
     public String getLocation() { return this.location; }
     public int getId() { return this.id; }
     public double getCapacity() { return this.capacity; }
+    public double getWeight() { return this.weight; }
     public double getMoney() { return this.money; }
     public void addMoney(double money) { this.money += money; }
     public double getPrice(String material) { return this.prices.get(material); }
+    public void setPrice(String material, double price) { prices.put(material, price); }
 
 
     // CONSTRUCTOR
@@ -45,6 +48,7 @@ public class RecyclingMachine {
         // initialize fields from constructor parameters
         this.money = money;
         this.capacity = capacity;
+        this.weight = 0;
         this.prices = prices;
 
         this.session = new ArrayList<>();
@@ -62,12 +66,16 @@ public class RecyclingMachine {
 
     // OTHER METHODS
 
-    public void recycleItem(RecyclableItem item) {
+    public void recycleItem(RecyclableItem item) throws IllegalArgumentException {
+        if (this.weight + item.getWeight() > this.capacity) {
+            throw new IllegalArgumentException("Recycling machine capacity exceeded");
+        }
         double price = getPrice(item.getMaterial()) * item.getWeight();
         TransactionRecord record = new TransactionRecord(item, price);
         if (this.isSession) {
             this.session.add(record);
         } else {
+            this.weight += item.getWeight();
             record.writeToTable(this.getTableName());
         }
     }
@@ -90,7 +98,7 @@ public class RecyclingMachine {
     }
 
     public void empty() {
-        this.capacity = 0;
+        this.weight = 0;
         TransactionRecord record = new TransactionRecord(null, 0);
         record.writeToTable(this.getTableName());
     }
@@ -125,4 +133,11 @@ public class RecyclingMachine {
         // TODO pay out a coupon of value amount
     }
 
+    public String printPrices() {
+        String result = "";
+        for (HashMap.Entry<String, Double> entry : prices.entrySet()) {
+            result += entry.getKey() + ": " + entry.getValue();
+        }
+        return result;
+    }
 }

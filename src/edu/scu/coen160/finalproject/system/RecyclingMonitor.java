@@ -27,13 +27,30 @@ public class RecyclingMonitor {
 
     // OTHER METHODS
 
-    public Date lastEmptied(int index) {
-        Date result = null;
+    public Timestamp lastEmptied(int index) {
+        Timestamp result = null;
         try (Connection connection = DriverManager.getConnection(TransactionRecord.database)) {
             Statement stmt = connection.createStatement();
             String sql = "SELECT MAX(date) FROM " + machines.get(index).getTableName() + ";";
             ResultSet resultset = stmt.executeQuery(sql);
-            result = resultset.getDate(1);  // SQL result columns are 1-indexed
+            result = resultset.getTimestamp(1);  // SQL result columns are 1-indexed
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
+
+    public double totalWeightCollected(int index, Timestamp start, Timestamp end) {
+        double result = 0;
+        try (Connection connection = DriverManager.getConnection(TransactionRecord.database)) {
+            Statement stmt = connection.createStatement();
+            String sql =
+                    "SELECT SUM(weight) " +
+                    "FROM " + machines.get(index).getTableName() + " " +
+                    "WHERE stamp >= " + start.toString() + " " +
+                    "AND stamp <= " + end.toString() + ";";
+            ResultSet resultset = stmt.executeQuery(sql);
+            result = resultset.getDouble(1);  // SQL result columns are 1-indexed
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

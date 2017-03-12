@@ -16,7 +16,7 @@ class TransactionRecord {
                                         "material VARCHAR(15) DEFAULT NULL," +
                                         "weight NUMBER(4,2) DEFAULT NULL," +
                                         "price NUMBER(4,2) DEFAULT NULL," +
-                                        "date DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL" +
+                                        "stamp DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL" +
                                     ");";
 
 

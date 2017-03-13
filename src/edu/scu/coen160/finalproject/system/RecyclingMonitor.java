@@ -41,7 +41,7 @@ public class RecyclingMonitor {
     }
 
     public double totalWeightCollected(int index, Timestamp start, Timestamp end) {
-        double result = 0;
+        double result;
         try (Connection connection = DriverManager.getConnection(TransactionRecord.database)) {
             Statement stmt = connection.createStatement();
             String sql =
@@ -55,5 +55,61 @@ public class RecyclingMonitor {
             throw new RuntimeException(e);
         }
         return result;
+    }
+
+    public double getCurrentMoney(int RCMNumber) {
+        return machines.get(RCMNumber).getMoney();
+    }
+
+    public double getCurrentCapacity(int RCMNumber) {
+        return machines.get(RCMNumber).getCapacity();
+    }
+
+    public int totalItemsCollected(int index, Timestamp start, Timestamp end) {
+        int result;
+        try (Connection connection = DriverManager.getConnection(TransactionRecord.database)) {
+            Statement stmt = connection.createStatement();
+            String sql =
+                    "SELECT COUNT(*) " +
+                    "FROM " + machines.get(index).getTableName() + " " +
+                    "WHERE stamp >= " + start.toString() + " " +
+                    "AND stamp <= " + end.toString() + " " +
+                    "AND price IS NOT NULL" + end.toString() + ";";
+            ResultSet resultset = stmt.executeQuery(sql);
+            result = resultset.getInt(1);  // SQL result columns are 1-indexed
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
+
+    public double totalValueIssued(int index, Timestamp start, Timestamp end) {
+        double result;
+        try (Connection connection = DriverManager.getConnection(TransactionRecord.database)) {
+            Statement stmt = connection.createStatement();
+            String sql =
+                    "SELECT SUM(price) " +
+                            "FROM " + machines.get(index).getTableName() + " " +
+                            "WHERE stamp >= " + start.toString() + " " +
+                            "AND stamp <= " + end.toString() + " " +
+                            "AND price IS NOT NULL" + end.toString() + ";";
+            ResultSet resultset = stmt.executeQuery(sql);
+            result = resultset.getDouble(1);  // SQL result columns are 1-indexed
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
+
+    public int getMostUsedMachine() {
+        int max = 0;
+        int id = -1;
+        for (int i = 0; i < machines.size(); i++) {
+            if (totalItemsCollected(i, new Timestamp(0), new Timestamp(System.currentTimeMillis())) > max) {
+                max = totalItemsCollected(i, new Timestamp(0), new Timestamp(System.currentTimeMillis()));
+                id = machines.get(i).getId();
+            }
+        }
+        return id;
     }
 }

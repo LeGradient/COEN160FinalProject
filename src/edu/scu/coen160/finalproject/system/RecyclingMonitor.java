@@ -89,10 +89,10 @@ public class RecyclingMonitor {
             Statement stmt = connection.createStatement();
             String sql =
                     "SELECT SUM(price) " +
-                            "FROM " + machines.get(index).getTableName() + " " +
-                            "WHERE stamp >= " + start.toString() + " " +
-                            "AND stamp <= " + end.toString() + " " +
-                            "AND price IS NOT NULL" + end.toString() + ";";
+                    "FROM " + machines.get(index).getTableName() + " " +
+                    "WHERE stamp >= " + start.toString() + " " +
+                    "AND stamp <= " + end.toString() + " " +
+                    "AND price IS NOT NULL" + end.toString() + ";";
             ResultSet resultset = stmt.executeQuery(sql);
             result = resultset.getDouble(1);  // SQL result columns are 1-indexed
         } catch (SQLException e) {

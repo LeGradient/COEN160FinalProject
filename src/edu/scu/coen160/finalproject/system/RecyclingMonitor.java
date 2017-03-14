@@ -20,6 +20,9 @@ public class RecyclingMonitor {
     // GETTERS & SETTERS
 
     public double getWeight(int index) { return machines.get(index).getWeight(); }
+    public double getCapacity(int index) {
+        return machines.get(index).getCapacity();
+    }
     public double getMoney(int index) { return machines.get(index).getMoney(); }
     public void setPrice(int index, String material, double price) { machines.get(index).setPrice(material, price); }
     public String printPrices(int index) { return machines.get(index).printPrices(); }
@@ -55,14 +58,6 @@ public class RecyclingMonitor {
             throw new RuntimeException(e);
         }
         return result;
-    }
-
-    public double getCurrentMoney(int RCMNumber) {
-        return machines.get(RCMNumber).getMoney();
-    }
-
-    public double getCurrentCapacity(int RCMNumber) {
-        return machines.get(RCMNumber).getCapacity();
     }
 
     public int totalItemsCollected(int index, Timestamp start, Timestamp end) {

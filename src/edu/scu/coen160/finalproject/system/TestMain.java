@@ -1,10 +1,13 @@
 package edu.scu.coen160.finalproject.system;
 
+import edu.scu.coen160.finalproject.gui.RecyclingUI;
+
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TestMain {
@@ -29,5 +32,11 @@ public class TestMain {
         RecyclableItem item = new RecyclableItem(5, "plastic");
         rcm.recycleItem(item);
         rcm.empty();
+
+        ArrayList<RecyclingMachine> machines = new ArrayList<RecyclingMachine>();
+        machines.add(rcm);
+
+        RecyclingMonitor rmos = new RecyclingMonitor(machines, "admin", "pass");
+        new RecyclingUI(rcm, rcm, rmos);
     }
 }

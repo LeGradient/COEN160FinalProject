@@ -25,7 +25,7 @@ public class TestMain {
         // instantiate an RCM and test stuff
         HashMap<String, Double> prices = new HashMap<>();
         prices.put("plastic", 10.0);
-        RecyclingMachine rcm = new RecyclingMachine(prices, 1000, 1000);
+        RecyclingMachine rcm = new RecyclingMachine(prices, 1000, 1000, "Santa Clara");
         RecyclableItem item = new RecyclableItem(5, "plastic");
         rcm.recycleItem(item);
         rcm.empty();

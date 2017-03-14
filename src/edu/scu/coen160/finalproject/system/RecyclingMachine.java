@@ -41,7 +41,7 @@ public class RecyclingMachine {
 
     // CONSTRUCTOR
 
-    public RecyclingMachine(HashMap<String, Double> prices, double money, double capacity) {
+    public RecyclingMachine(HashMap<String, Double> prices, double money, double capacity, String location) {
         // assign ID and increment object counter
         this.id = objCount++;
 
@@ -50,6 +50,7 @@ public class RecyclingMachine {
         this.capacity = capacity;
         this.weight = 0;
         this.prices = prices;
+        this.location = location;
 
         this.session = new ArrayList<>();
 

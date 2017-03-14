@@ -59,4 +59,11 @@ class TransactionRecord {
             System.out.println(e);
         }
     }
+
+    public String toString() {
+        String result = item.getMaterial();
+        result += " " + String.valueOf(item.getWeight());
+        result += " " + String.valueOf(this.price);
+        return result;
+    }
 }

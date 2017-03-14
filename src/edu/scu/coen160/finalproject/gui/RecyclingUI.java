@@ -1,7 +1,6 @@
 package edu.scu.coen160.finalproject.gui;
 
-import edu.scu.coen160.finalproject.system.RecyclingMachine;
-import edu.scu.coen160.finalproject.system.RecyclingMonitor;
+import edu.scu.coen160.finalproject.system.*;
 
 import javax.swing.*;
 import java.awt.*;

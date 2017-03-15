@@ -10,7 +10,7 @@ class RCMPanel extends JPanel {
     private JButton toggleSessionButton;
     private JButton endSessionButton;
     private JButton weighButton;
-    private JButton submitButton;
+    private JButton cancelButton;
     private JTextArea receipt;
     private JTextArea info;
     private JPanel centerPanel;
@@ -18,6 +18,12 @@ class RCMPanel extends JPanel {
     private RecyclingMachine myRCM;
 
     private RecyclableItem myItem;
+
+    private void submitItem() {
+        myRCM.recycleItem(myItem);
+        myRCM.payOut(myRCM.calculatePrice(myItem));
+        receipt.setText("Receipt\n");
+    }
 
     private void toggleButtons() {
         if (myRCM.isSession()) {
@@ -51,23 +57,18 @@ class RCMPanel extends JPanel {
         info.append(myRCM.printPrices());
 
         toggleSessionButton = new JButton("Start Session");
+        toggleSessionButton.setActionCommand("start");
         toggleSessionButton.addActionListener(actionEvent -> {
-            if (!myRCM.isSession()) {
+            if (actionEvent.getActionCommand().equals("start")) {
                 myRCM.startSession();
                 toggleButtons();
+                toggleSessionButton.setActionCommand("cancel");
             } else {
                 myRCM.cancelSession();
+                receipt.setText("Receipt\n");
                 toggleButtons();
+                toggleSessionButton.setActionCommand("start");
             }
-        });
-
-        submitButton = new JButton("Submit Item");
-        submitButton.addActionListener(actionEvent -> {
-            // TODO pay out for 1 item
-
-            myRCM.recycleItem(myItem);
-            myRCM.payOut(myRCM.calculatePrice(myItem));
-            receipt.setText("Receipt\n");
         });
 
         endSessionButton = new JButton("End Session & Submit Items");
@@ -78,28 +79,55 @@ class RCMPanel extends JPanel {
                 toggleButtons();
                 myRCM.payOut();
                 receipt.setText("Receipt\n");
+                toggleSessionButton.setActionCommand("start");
             }
         });
 
         weighButton = new JButton("Weigh Item");
+        weighButton.setActionCommand("weigh");
+
         weighButton.addActionListener(actionEvent -> {
-            String[] items = myRCM.getAcceptableItems().toArray(new String[0]);
+            if (actionEvent.getActionCommand().equals("weigh")) {
+                String[] items = myRCM.getAcceptableItems().toArray(new String[0]);
 
-            int size = myRCM.getAcceptableItems().size();
+                int size = myRCM.getAcceptableItems().size();
 
-            Random r = new Random();
-            int materialIndex = r.nextInt(size);
+                Random r = new Random();
+                int materialIndex = r.nextInt(size);
 
-            myItem = new RecyclableItem(items[materialIndex]);
-            receipt.append(myItem.toString() + " ");
-            receipt.append("$" + String.valueOf(myRCM.calculatePrice(myItem)) + "\n");
+                myItem = new RecyclableItem(items[materialIndex]);
+                receipt.append(myItem.toString() + " ");
+                receipt.append("$" + String.valueOf(myRCM.calculatePrice(myItem)) + "\n");
+                if (!myRCM.isSession()) {
+                    toggleSessionButton.setEnabled(false);
+                    cancelButton.setEnabled(true);
+                    weighButton.setActionCommand("submit");
+                    weighButton.setText("Submit Item");
+                }
+            } else {
+                submitItem();
+                toggleSessionButton.setEnabled(true);
+                cancelButton.setEnabled(false);
+                weighButton.setActionCommand("weigh");
+                weighButton.setText("Weigh Item");
+            }
+        });
+
+        cancelButton = new JButton("Cancel");
+        cancelButton.setEnabled(false);
+
+        cancelButton.addActionListener(actionEvent -> {
+            receipt.setText("Receipt\n");
+            cancelButton.setEnabled(false);
+            weighButton.setText("Weigh Item");
+            toggleSessionButton.setEnabled(true);
         });
 
         centerPanel = new JPanel();
         centerPanel.setLayout(new FlowLayout());
 
         centerPanel.add(weighButton);
-        centerPanel.add(submitButton);
+        centerPanel.add(cancelButton);
 
         bottomPanel = new JPanel();
         bottomPanel.setLayout(new FlowLayout());

@@ -137,7 +137,7 @@ public class RecyclingMachine {
     public String printPrices() {
         String result = "";
         for (HashMap.Entry<String, Double> entry : prices.entrySet()) {
-            result += entry.getKey() + ": " + entry.getValue();
+            result += entry.getKey() + ": " + entry.getValue() + "\n";
         }
         return result;
     }

@@ -10,8 +10,8 @@ class TransactionRecord {
     private RecyclableItem item;
     private double price;
 
-    public static String database = "jdbc:sqlite:TransactionRecords.db";
-    public static String newTable = "DROP TABLE IF EXISTS %s;" +
+    public static final String database = "jdbc:sqlite:TransactionRecords.db";
+    public static final String newTable = "DROP TABLE IF EXISTS %s;" +
                                     "CREATE TABLE %s (" +
                                         "material VARCHAR(15) DEFAULT NULL," +
                                         "weight NUMBER(4,2) DEFAULT NULL," +

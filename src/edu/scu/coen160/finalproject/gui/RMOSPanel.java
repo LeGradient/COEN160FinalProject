@@ -35,20 +35,27 @@ class RMOSPanel extends JPanel {
     private class InfoPanel extends JPanel {
 
         private class AddItemPanel extends JPanel {
-            private RecyclingMonitor RMOS;
+            //private RecyclingMonitor RMOS;
             private JComboBox<String> rcmList;
             private JTextField materialField = new JTextField(10);
             private JTextField priceField = new JTextField(10);
             private JButton submitBtn = new JButton("Add Item");
 
-            private AddItemPanel(RecyclingMonitor RMOS) {
-                this.RMOS = RMOS;
+            private AddItemPanel() {
                 // generate a list of RCM names
                 ArrayList<String> machineNames = new ArrayList<>();
-                for (RecyclingMachine machine : this.RMOS.getMachines()) {
+                for (RecyclingMachine machine : RMOSPanel.this.RMOS.getMachines()) {
                     machineNames.add(machine.getTableName());
                 }
+                // initialize rcmList with the RCM names
                 this.rcmList = new JComboBox<>(machineNames.toArray(new String[0]));
+
+                // submit button action listener
+                this.submitBtn.addActionListener(actionEvent -> {
+                    int index = rcmList.getSelectedIndex();
+                    RecyclingMachine machine = RMOSPanel.this.RMOS.getMachines()[index];
+
+                });
 
                 this.setLayout(new GridLayout(5, 1));
 
@@ -72,12 +79,10 @@ class RMOSPanel extends JPanel {
             }
         }
 
-        private RecyclingMonitor RMOS;
         private AddItemPanel addItemPanel;
 
-        private InfoPanel(RecyclingMonitor RMOS) {
-            this.RMOS = RMOS;
-            this.addItemPanel = new AddItemPanel(this.RMOS);
+        private InfoPanel() {
+            this.addItemPanel = new AddItemPanel();
             this.setLayout(new GridLayout(2, 3));
             this.add(this.addItemPanel);
         }
@@ -90,11 +95,11 @@ class RMOSPanel extends JPanel {
 
     RMOSPanel(RecyclingMonitor RMOS) {
         this.RMOS = RMOS;
-        this.infoPanel = new InfoPanel(this.RMOS);
+        this.infoPanel = new InfoPanel();
 
         this.add(loginPanel);
 
-        // initialize the login screen
+        // login button action listener
         this.loginPanel.loginButton.addActionListener(actionEvent -> {
             // attempt to log in with the currently entered credentials
             if (this.RMOS.login(this.loginPanel.userField.getText(), this.loginPanel.passField.getText())) {

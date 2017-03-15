@@ -2,7 +2,7 @@ package edu.scu.coen160.finalproject.system;
 
 import java.util.Random;
 
-class RecyclableItem {
+public class RecyclableItem {
     private double weight;
     private String material;
 

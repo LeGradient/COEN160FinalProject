@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -69,11 +70,18 @@ public class RecyclingMachine {
 
     // OTHER METHODS
 
+    public double calculatePrice (RecyclableItem item) {
+        double result = getPrice(item.getMaterial()) * item.getWeight();
+        DecimalFormat moneyFormat = new DecimalFormat("####0.00");
+        result = Double.valueOf(moneyFormat.format(result));
+        return result;
+    }
+
     public void recycleItem(RecyclableItem item) throws IllegalArgumentException {
         if (this.weight + item.getWeight() > this.capacity) {
             throw new IllegalArgumentException("Recycling machine capacity exceeded");
         }
-        double price = getPrice(item.getMaterial()) * item.getWeight();
+        double price = calculatePrice(item);
         TransactionRecord record = new TransactionRecord(item, price);
         if (this.isSession) {
             this.session.add(record);

@@ -37,7 +37,7 @@ public class RecyclingMachine {
     public void addMoney(double money) { this.money += money; }
     public double getPrice(String material) { return this.prices.get(material); }
     public void setPrice(String material, double price) { prices.put(material, price); }
-
+    public boolean isSession() { return isSession; }
 
     // CONSTRUCTOR
 

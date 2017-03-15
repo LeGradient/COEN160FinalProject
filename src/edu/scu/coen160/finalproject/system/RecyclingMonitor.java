@@ -30,6 +30,14 @@ public class RecyclingMonitor {
 
     // OTHER METHODS
 
+    public boolean login(String username, String password) {
+        if (this.username.compareToIgnoreCase(username) == 0 && this.password.compareTo(password) == 0) {
+            this.isLoggedIn = true;
+            return true;
+        }
+        return false;
+    }
+
     public Timestamp lastEmptied(int index) {
         Timestamp result = null;
         try (Connection connection = DriverManager.getConnection(TransactionRecord.database)) {

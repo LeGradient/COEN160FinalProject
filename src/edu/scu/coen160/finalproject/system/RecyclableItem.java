@@ -26,4 +26,10 @@ public class RecyclableItem {
     public double getWeight() {
         return this.weight;
     }
+
+    public String toString() {
+        String result = material;
+       // result += " " + String.valueOf(this.getWeight());
+        return result;
+    }
 }

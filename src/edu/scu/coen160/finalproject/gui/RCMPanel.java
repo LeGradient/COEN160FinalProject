@@ -103,6 +103,8 @@ class RCMPanel extends JPanel {
                     cancelButton.setEnabled(true);
                     weighButton.setActionCommand("submit");
                     weighButton.setText("Submit Item");
+                } else {
+                    myRCM.recycleItem(myItem);
                 }
             } else {
                 submitItem();

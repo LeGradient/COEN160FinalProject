@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 public class RecyclingMachine {
 
@@ -38,6 +39,7 @@ public class RecyclingMachine {
     public double getPrice(String material) { return this.prices.get(material); }
     public void setPrice(String material, double price) { prices.put(material, price); }
     public boolean isSession() { return isSession; }
+    public Set<String> getAcceptableItems() { return this.prices.keySet(); }
 
     // CONSTRUCTOR
 

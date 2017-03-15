@@ -25,7 +25,8 @@ public class RecyclingMachine {
     private double money;
     private HashMap<String, Double> prices;
     private boolean isSession;
-    private ArrayList<TransactionRecord> session;
+    private ArrayList<TransactionRecord> sessionRecords;
+    private ArrayList<RecyclableItem> sessionItems;
 
 
     // GETTERS & SETTERS
@@ -55,7 +56,8 @@ public class RecyclingMachine {
         this.prices = prices;
         this.location = location;
 
-        this.session = new ArrayList<>();
+        this.sessionRecords = new ArrayList<>();
+        this.sessionItems = new ArrayList<>();
 
         // create a database table for storing transaction records
         try (Connection connection = DriverManager.getConnection(TransactionRecord.database)) {
@@ -70,7 +72,7 @@ public class RecyclingMachine {
 
     // OTHER METHODS
 
-    public double calculatePrice (RecyclableItem item) {
+    public double calculateItemPrice(RecyclableItem item) {
         double result = getPrice(item.getMaterial()) * item.getWeight();
         DecimalFormat moneyFormat = new DecimalFormat("####0.00");
         result = Double.valueOf(moneyFormat.format(result));
@@ -81,10 +83,11 @@ public class RecyclingMachine {
         if (this.weight + item.getWeight() > this.capacity) {
             throw new IllegalArgumentException("Recycling machine capacity exceeded");
         }
-        double price = calculatePrice(item);
+        double price = calculateItemPrice(item);
         TransactionRecord record = new TransactionRecord(item, price);
-        if (this.isSession) {
-            this.session.add(record);
+        if (this.isSession()) {
+            this.sessionRecords.add(record);
+            this.sessionItems.add(item);
         } else {
             this.weight += item.getWeight();
             record.writeToTable(this.getTableName());
@@ -92,20 +95,25 @@ public class RecyclingMachine {
     }
 
     public void startSession() {
+        cancelSession();
         this.isSession = true;
     }
 
     public void cancelSession() {
-        this.session = new ArrayList<>();
+        this.sessionRecords = new ArrayList<>();
+        this.sessionItems = new ArrayList<>();
         this.isSession = false;
     }
 
     public void submitSession() {
-        assert this.isSession;
-        for (TransactionRecord record : session) {
+        assert this.isSession();
+        this.isSession = false;
+        for (RecyclableItem item : sessionItems) {
+            recycleItem(item);
+        }
+        for (TransactionRecord record : sessionRecords) {
             record.writeToTable(this.getTableName());
         }
-        this.isSession = false;
     }
 
     public void empty() {
@@ -131,10 +139,10 @@ public class RecyclingMachine {
 
     // payOut for a session
     public double payOut() {
-        assert this.isSession;
+        assert this.isSession();
         double owedValue = 0;
 
-        for (TransactionRecord record : session) {
+        for (TransactionRecord record : sessionRecords) {
             owedValue += record.getPrice();
         }
         return payOut(owedValue);

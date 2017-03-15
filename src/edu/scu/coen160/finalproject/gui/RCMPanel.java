@@ -21,7 +21,7 @@ class RCMPanel extends JPanel {
 
     private void submitItem() {
         myRCM.recycleItem(myItem);
-        myRCM.payOut(myRCM.calculatePrice(myItem));
+        myRCM.payOut(myRCM.calculateItemPrice(myItem));
         receipt.setText("Receipt\n");
     }
 
@@ -97,7 +97,7 @@ class RCMPanel extends JPanel {
 
                 myItem = new RecyclableItem(items[materialIndex]);
                 receipt.append(myItem.toString() + " ");
-                receipt.append("$" + String.valueOf(myRCM.calculatePrice(myItem)) + "\n");
+                receipt.append("$" + String.valueOf(myRCM.calculateItemPrice(myItem)) + "\n");
                 if (!myRCM.isSession()) {
                     toggleSessionButton.setEnabled(false);
                     cancelButton.setEnabled(true);

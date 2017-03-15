@@ -37,6 +37,11 @@ public class TestMain {
         machines.add(rcm);
 
         RecyclingMonitor rmos = new RecyclingMonitor(machines, "admin", "pass");
-        new RecyclingUI(rcm, rcm, rmos);
+
+        prices.put("aluminium", 20.0);
+        RecyclingMachine rcm2 = new RecyclingMachine(prices, 100000, 10000, "San Jose");
+        machines.add(rcm2);
+
+        new RecyclingUI(rcm, rcm2, rmos);
     }
 }

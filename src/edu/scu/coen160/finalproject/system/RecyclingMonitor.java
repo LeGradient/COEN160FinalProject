@@ -26,7 +26,15 @@ public class RecyclingMonitor {
     public double getMoney(int index) { return machines.get(index).getMoney(); }
     public void setPrice(int index, String material, double price) { machines.get(index).setPrice(material, price); }
     public String printPrices(int index) { return machines.get(index).printPrices(); }
+    public RecyclingMachine getMachineAt(int i) { return machines.get(i); }
     public RecyclingMachine[] getMachines() { return machines.toArray(new RecyclingMachine[0]); }
+    public String[] getMachineNames() {
+        ArrayList<String> names = new ArrayList<>();
+        for (RecyclingMachine machine : machines) {
+            names.add(machine.getTableName());
+        }
+        return names.toArray(new String[0]);
+    }
 
 
     // OTHER METHODS

@@ -97,6 +97,7 @@ class RMOSPanel extends JPanel {
             private RecyclingMonitor RMOS = RMOSPanel.this.RMOS;
             private JLabel capacityLabel = new JLabel();
             private JLabel moneyLabel = new JLabel();
+            private JLabel lastEmpty = new JLabel();
 
             private CheckStatusPanel() {
                 this.setLayout(new GridLayout(3, 1));
@@ -113,11 +114,13 @@ class RMOSPanel extends JPanel {
                 // empty button & wrapper panel
                 JPanel emptyWrapper = new JPanel();
                 JButton emptyBtn = new JButton("Empty");
+                lastEmpty = new JLabel("Last emptied: ");
                 emptyBtn.addActionListener(actionEvent -> {
                     this.RMOS.empty(InfoPanel.this.rcmList.getSelectedIndex());
                     this.refresh();
                 });
                 emptyWrapper.add(emptyBtn);
+                emptyWrapper.add(lastEmpty);
 
                 // money text field, add button, & wrapper panel
                 JPanel moneyPanel = new JPanel(new FlowLayout());
@@ -149,6 +152,7 @@ class RMOSPanel extends JPanel {
                 int i = InfoPanel.this.rcmList.getSelectedIndex();
                 this.capacityLabel.setText("Capacity: " + this.RMOS.getWeight(i) + " / " + this.RMOS.getCapacity(i));
                 this.moneyLabel.setText("Money: " + this.RMOS.getMoney(i));
+                this.lastEmpty.setText("Last emptied: " + this.RMOS.lastEmptied(i));
             }
         }
 

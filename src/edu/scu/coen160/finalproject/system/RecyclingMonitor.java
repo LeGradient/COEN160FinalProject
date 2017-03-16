@@ -46,13 +46,13 @@ public class RecyclingMonitor {
         return false;
     }
 
-    public Timestamp lastEmptied(int index) {
-        Timestamp result = null;
+    public String lastEmptied(int index) {
+        String result = null;
         try (Connection connection = DriverManager.getConnection(TransactionRecord.database)) {
             Statement stmt = connection.createStatement();
-            String sql = "SELECT MAX(date) FROM " + machines.get(index).getTableName() + ";";
+            String sql = "SELECT MAX(stamp) FROM " + machines.get(index).getTableName() + " WHERE price IS NULL;";
             ResultSet resultset = stmt.executeQuery(sql);
-            result = resultset.getTimestamp(1);  // SQL result columns are 1-indexed
+            result = resultset.getString(1);  // SQL result columns are 1-indexed
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

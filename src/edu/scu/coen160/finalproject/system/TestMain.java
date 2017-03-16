@@ -42,7 +42,7 @@ public class TestMain {
         HashMap<String, Double> prices2 = new HashMap<>();
         prices2.put("aluminium", 20.0);
         prices2.put("glass", 12.0);
-        RecyclingMachine rcm2 = new RecyclingMachine(prices, 100000, 10000, "San Jose");
+        RecyclingMachine rcm2 = new RecyclingMachine(prices2, 100000, 10000, "San Jose");
         machines.add(rcm2);
 
         new RecyclingUI(rcm, rcm2, rmos);

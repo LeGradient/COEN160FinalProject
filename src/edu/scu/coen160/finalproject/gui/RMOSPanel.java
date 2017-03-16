@@ -3,7 +3,6 @@ package edu.scu.coen160.finalproject.gui;
 import edu.scu.coen160.finalproject.system.*;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -100,6 +99,7 @@ class RMOSPanel extends JPanel {
         }
 
         private class CheckStatusPanel extends JPanel {
+            private RecyclingMonitor RMOS = RMOSPanel.this.RMOS;
             private JLabel capacityLabel = new JLabel();
             private JLabel moneyLabel = new JLabel();
 
@@ -149,13 +149,14 @@ class RMOSPanel extends JPanel {
             }
 
             private void update() {
-                RecyclingMachine machine = RMOSPanel.this.RMOS.getMachineAt(InfoPanel.this.rcmList.getSelectedIndex());
-                this.capacityLabel.setText("Capacity: " + machine.getWeight() + " / " + machine.getCapacity());
-                this.moneyLabel.setText("Money: " + machine.getMoney());
+                int i = InfoPanel.this.rcmList.getSelectedIndex();
+                this.capacityLabel.setText("Capacity: " + this.RMOS.getWeight(i) + " / " + this.RMOS.getCapacity(i));
+                this.moneyLabel.setText("Money: " + this.RMOS.getMoney(i));
             }
         }
 
-        private JComboBox<String> rcmList = new JComboBox<>(RMOSPanel.this.RMOS.getMachineNames());
+        private RecyclingMonitor RMOS = RMOSPanel.this.RMOS;
+        private JComboBox<String> rcmList = new JComboBox<>(this.RMOS.getMachineNames());
         private AddItemPanel addItemPanel = new AddItemPanel();
         private CheckStatusPanel checkStatusPanel = new CheckStatusPanel();
         private JButton logoutBtn = new JButton("Logout");

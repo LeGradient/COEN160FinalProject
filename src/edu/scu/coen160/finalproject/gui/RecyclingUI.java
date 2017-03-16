@@ -18,21 +18,28 @@ public class RecyclingUI extends JFrame {
         myRCM2 = RCM2;
         myRMOS = RMOS;
 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int height = screenSize.height;
-        int width = screenSize.width;
-
-        setSize(width/4 , height/4);
-        setLocationRelativeTo(null);
+        RMOSPanel myRMOSPanel = new RMOSPanel(myRMOS);
+        tabs.addChangeListener(changeEvent -> {
+            myRMOSPanel.refresh();
+        });
 
         Container container = getContentPane();
         container.add(tabs);
 
-        tabs.addTab("RCM 1", new RCMPanel(myRCM1));
-        tabs.addTab("RCM 2", new RCMPanel(myRCM2));
-        tabs.addTab("RMOS", new RMOSPanel(myRMOS));
+        tabs.addTab("RCM 0", new RCMPanel(myRCM1));
+        tabs.addTab("RCM 1", new RCMPanel(myRCM2));
+        tabs.addTab("RMOS", myRMOSPanel);
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+//        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+//        int height = screenSize.height;
+//        int width = screenSize.width;
+
+        setSize(1920, 800);
+        setLocationRelativeTo(null);
+
+
 
         setVisible(true);
     }

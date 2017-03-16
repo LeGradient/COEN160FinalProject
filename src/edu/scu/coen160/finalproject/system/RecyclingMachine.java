@@ -15,6 +15,8 @@ public class RecyclingMachine {
     // used to assign unique IDs to each machine
     private static int objCount = 0;
 
+    // format money values
+    private static DecimalFormat moneyFormat = new DecimalFormat("####0.00");
 
     // FIELDS
 
@@ -35,8 +37,8 @@ public class RecyclingMachine {
     public String getLocation() { return this.location; }
     public int getId() { return this.id; }
     public double getCapacity() { return this.capacity; }
-    public double getWeight() { return this.weight; }
-    public double getMoney() { return this.money; }
+    public double getWeight() { return Double.valueOf(RecyclingMachine.moneyFormat.format(this.weight)); }
+    public double getMoney() { return Double.valueOf(RecyclingMachine.moneyFormat.format(this.money)); }
     public void addMoney(double money) { this.money += money; }
     public double getPrice(String material) { return this.prices.get(material); }
     public void setPrice(String material, double price) { prices.put(material, price); }
@@ -74,8 +76,7 @@ public class RecyclingMachine {
 
     public double calculateItemPrice(RecyclableItem item) {
         double result = getPrice(item.getMaterial()) * item.getWeight();
-        DecimalFormat moneyFormat = new DecimalFormat("####0.00");
-        result = Double.valueOf(moneyFormat.format(result));
+        result = Double.valueOf(RecyclingMachine.moneyFormat.format(result));
         return result;
     }
 

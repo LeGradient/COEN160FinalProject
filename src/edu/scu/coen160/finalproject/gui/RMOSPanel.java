@@ -59,16 +59,22 @@ class RMOSPanel extends JPanel {
             private JButton submitBtn = new JButton("Add Item");
 
             private AddItemPanel() {
+                // title label wrapper panel
+                JPanel titleWrapper = new JPanel();
+                titleWrapper.add(new JLabel("Add an Item Type to a Recycling Machine"));
+
                 // submit button action listener
                 this.submitBtn.addActionListener(actionEvent -> {
-                    // update the RCM
-                    int index = rcmList.getSelectedIndex();
+                    // refresh the RCM
+                    int index = InfoPanel.this.rcmList.getSelectedIndex();
                     RMOS.setPrice(index, this.materialField.getText(), Double.parseDouble(this.priceField.getText()));
 
                     // clear the text fields
                     this.materialField.setText("");
                     this.priceField.setText("");
                 });
+                JPanel submitPanel = new JPanel();
+                submitPanel.add(this.submitBtn);
 
                 this.setLayout(new GridLayout(5, 1));
 
@@ -80,10 +86,10 @@ class RMOSPanel extends JPanel {
                 pricePanel.add(new JLabel("Price: "));
                 pricePanel.add(this.priceField);
 
-                this.add(new JLabel("Add an Item Type to a Recycling Machine"));
+                this.add(titleWrapper);
                 this.add(materialPanel);
                 this.add(pricePanel);
-                this.add(this.submitBtn);
+                this.add(submitPanel);
             }
         }
 
@@ -95,47 +101,51 @@ class RMOSPanel extends JPanel {
             private CheckStatusPanel() {
                 this.setLayout(new GridLayout(3, 1));
 
-                // update fields when the RCM list changes
+                // refresh fields when the RCM list changes
                 InfoPanel.this.rcmList.addActionListener(actionEvent -> {
-                    this.update();
+                    this.refresh();
                 });
 
-                JLabel titleLabel = new JLabel("Check Status");
+                // title label wrapper panel
+                JPanel titleWrapper = new JPanel();
+                titleWrapper.add(new JLabel("Check Recycling Machine Status"));
 
+                // empty button & wrapper panel
+                JPanel emptyWrapper = new JPanel();
                 JButton emptyBtn = new JButton("Empty");
                 emptyBtn.addActionListener(actionEvent -> {
                     this.RMOS.empty(InfoPanel.this.rcmList.getSelectedIndex());
-                    this.update();
+                    this.refresh();
                 });
+                emptyWrapper.add(emptyBtn);
 
+                // money text field, add button, & wrapper panel
                 JPanel moneyPanel = new JPanel(new FlowLayout());
-
                 JTextField moneyField = new JTextField(5);
-
                 JButton moneyBtn = new JButton("Add Money");
                 moneyBtn.addActionListener(actionEvent -> {
                     double money = Double.parseDouble(moneyField.getText());
                     this.RMOS.addMoney(InfoPanel.this.rcmList.getSelectedIndex(), money);
-                    this.update();
+                    this.refresh();
                 });
-
                 moneyPanel.add(moneyField);
                 moneyPanel.add(moneyBtn);
 
+                // grid for aligning labels & corresponding controls
+                JPanel gridWrapper = new JPanel();
                 JPanel gridPanel = new JPanel(new GridLayout(2, 2));
                 gridPanel.add(this.capacityLabel);
-                gridPanel.add(emptyBtn);
+                gridPanel.add(emptyWrapper);
                 gridPanel.add(this.moneyLabel);
                 gridPanel.add(moneyPanel);
+                gridWrapper.add(gridPanel);
 
-
-                this.add(titleLabel);
-                this.add(rcmList);
-                this.add(gridPanel);
-                this.update();
+                this.add(titleWrapper);
+                this.add(gridWrapper);
+                this.refresh();
             }
 
-            private void update() {
+            private void refresh() {
                 int i = InfoPanel.this.rcmList.getSelectedIndex();
                 this.capacityLabel.setText("Capacity: " + this.RMOS.getWeight(i) + " / " + this.RMOS.getCapacity(i));
                 this.moneyLabel.setText("Money: " + this.RMOS.getMoney(i));
@@ -170,11 +180,11 @@ class RMOSPanel extends JPanel {
                 add(valueChartPanel);
 
                 InfoPanel.this.rcmList.addActionListener(actionEvent -> {
-                    this.update();
+                    this.refresh();
                 });
             }
 
-            private void update() {
+            private void refresh() {
                 itemsChart = createChart(createDataset(0));
                 itemsChartPanel = new ChartPanel(itemsChart);
 
@@ -226,22 +236,31 @@ class RMOSPanel extends JPanel {
 
         private RecyclingMonitor RMOS = RMOSPanel.this.RMOS;
         private JComboBox<String> rcmList = new JComboBox<>(this.RMOS.getMachineNames());
+        private JButton logoutBtn = new JButton("Logout");
         private AddItemPanel addItemPanel = new AddItemPanel();
         private CheckStatusPanel checkStatusPanel = new CheckStatusPanel();
-        private JButton logoutBtn = new JButton("Logout");
+        private StatisticsPanel statisticsPanel = new StatisticsPanel();
 
         private InfoPanel() {
             this.setLayout(new BorderLayout());
 
-            JPanel gridPanel = new JPanel(new GridLayout(1, 3));
+            JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 50));
+            topPanel.add(this.rcmList);
+            topPanel.add(this.logoutBtn);
+
+            JPanel gridPanel = new JPanel(new GridLayout(1, 2));
             gridPanel.add(this.addItemPanel);
             gridPanel.add(this.checkStatusPanel);
-            gridPanel.add(this.new StatisticsPanel());
-            this.add(this.rcmList, BorderLayout.PAGE_START);
+
+            this.add(topPanel, BorderLayout.PAGE_START);
             this.add(gridPanel, BorderLayout.CENTER);
-            this.add(this.logoutBtn, BorderLayout.PAGE_END);
+            this.add(this.statisticsPanel, BorderLayout.PAGE_END);
         }
 
+        private void refresh() {
+            this.checkStatusPanel.refresh();
+            this.statisticsPanel.refresh();
+        }
     }
 
     private RecyclingMonitor RMOS;
@@ -278,5 +297,9 @@ class RMOSPanel extends JPanel {
             this.add(this.loginPanel);
             this.repaint();
         });
+    }
+
+    void refresh() {
+        infoPanel.refresh();
     }
 }

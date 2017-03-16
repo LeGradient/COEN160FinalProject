@@ -28,6 +28,7 @@ public class TestMain {
         // instantiate an RCM and test stuff
         HashMap<String, Double> prices = new HashMap<>();
         prices.put("plastic", 10.0);
+        prices.put("rubber", 15.0);
         RecyclingMachine rcm = new RecyclingMachine(prices, 1000, 1000, "Santa Clara");
         RecyclableItem item = new RecyclableItem(5, "plastic");
         // rcm.recycleItem(item);
@@ -38,7 +39,9 @@ public class TestMain {
 
         RecyclingMonitor rmos = new RecyclingMonitor(machines, "admin", "pass");
 
-        prices.put("aluminium", 20.0);
+        HashMap<String, Double> prices2 = new HashMap<>();
+        prices2.put("aluminium", 20.0);
+        prices2.put("glass", 12.0);
         RecyclingMachine rcm2 = new RecyclingMachine(prices, 100000, 10000, "San Jose");
         machines.add(rcm2);
 

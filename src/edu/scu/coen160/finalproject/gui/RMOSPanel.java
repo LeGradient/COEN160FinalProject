@@ -5,6 +5,13 @@ import edu.scu.coen160.finalproject.system.*;
 import javax.swing.*;
 import java.awt.*;
 
+import org.jfree.chart.*;
+import org.jfree.chart.axis.*;
+import org.jfree.chart.block.BlockBorder;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.data.general.DefaultKeyedValues2DDataset;
+
 class RMOSPanel extends JPanel {
 
     private class LoginPanel extends JPanel {
@@ -135,6 +142,88 @@ class RMOSPanel extends JPanel {
             }
         }
 
+        private class StatisticsPanel extends JPanel {
+            JFreeChart itemsChart;
+            JFreeChart weightChart;
+            JFreeChart valueChart;
+
+            ChartPanel itemsChartPanel;
+            ChartPanel weightChartPanel;
+            ChartPanel valueChartPanel;
+
+            private StatisticsPanel() {
+                DefaultKeyedValues2DDataset itemsDataset = createDataset(0);
+                itemsChart = createChart(itemsDataset);
+                itemsChartPanel = new ChartPanel(itemsChart, false);
+
+
+                DefaultKeyedValues2DDataset weightDataset = createDataset(1);
+                weightChart = createChart(weightDataset);
+                weightChartPanel = new ChartPanel(weightChart, false);
+
+                DefaultKeyedValues2DDataset valueDataset = createDataset(2);
+                valueChart = createChart(valueDataset);
+                valueChartPanel = new ChartPanel(valueChart, false);
+
+                add(itemsChartPanel);
+                add(weightChartPanel);
+                add(valueChartPanel);
+
+                InfoPanel.this.rcmList.addActionListener(actionEvent -> {
+                    this.update();
+                });
+            }
+
+            private void update() {
+                itemsChart = createChart(createDataset(0));
+                itemsChartPanel = new ChartPanel(itemsChart);
+
+                weightChart = createChart(createDataset(1));
+                weightChartPanel = new ChartPanel(weightChart);
+
+                valueChart = createChart(createDataset(2));
+                valueChartPanel = new ChartPanel(valueChart);
+
+                this.removeAll();
+                add(itemsChartPanel);
+                add(weightChartPanel);
+                add(valueChartPanel);
+            }
+
+            private JFreeChart createChart(DefaultKeyedValues2DDataset dataset) {
+                JFreeChart chart = ChartFactory.createBarChart(
+                        "STATISTICS", null /* x-axis label*/,
+                        null /* y-axis label */, dataset);
+                chart.setBackgroundPaint(Color.white);
+                CategoryPlot plot = (CategoryPlot) chart.getPlot();
+                NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+                rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+                BarRenderer renderer = (BarRenderer) plot.getRenderer();
+                renderer.setDrawBarOutline(false);
+                chart.getLegend().setFrame(BlockBorder.NONE);
+                return chart;
+            }
+
+            private DefaultKeyedValues2DDataset createDataset(int typeOfChart) {
+                if (typeOfChart == 0) {
+                    DefaultKeyedValues2DDataset dataset = new DefaultKeyedValues2DDataset();
+                    dataset.addValue(RMOS.totalItemsCollectedBoundless(0), "RCM1", "Total Items Collected");
+                    dataset.addValue(RMOS.totalItemsCollectedBoundless(1), "RCM2", "Total Items Collected");
+                    return dataset;
+                } else if (typeOfChart == 1) {
+                    DefaultKeyedValues2DDataset dataset = new DefaultKeyedValues2DDataset();
+                    dataset.addValue(RMOS.totalWeightCollectedBoundless(0), "RCM1", "Total Weight Collected");
+                    dataset.addValue(RMOS.totalWeightCollectedBoundless(1), "RCM2", "Total Weight Collected");
+                    return dataset;
+                } else {
+                    DefaultKeyedValues2DDataset dataset = new DefaultKeyedValues2DDataset();
+                    dataset.addValue(RMOS.totalValueIssuedBoundless(0), "RCM1", "Total Value Issued");
+                    dataset.addValue(RMOS.totalValueIssuedBoundless(1), "RCM2", "Total Value Issued");
+                    return dataset;
+                }
+            }
+        }
+
         private RecyclingMonitor RMOS = RMOSPanel.this.RMOS;
         private JComboBox<String> rcmList = new JComboBox<>(this.RMOS.getMachineNames());
         private AddItemPanel addItemPanel = new AddItemPanel();
@@ -147,7 +236,7 @@ class RMOSPanel extends JPanel {
             JPanel gridPanel = new JPanel(new GridLayout(1, 3));
             gridPanel.add(this.addItemPanel);
             gridPanel.add(this.checkStatusPanel);
-
+            gridPanel.add(this.new StatisticsPanel());
             this.add(this.rcmList, BorderLayout.PAGE_START);
             this.add(gridPanel, BorderLayout.CENTER);
             this.add(this.logoutBtn, BorderLayout.PAGE_END);

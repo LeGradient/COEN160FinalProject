@@ -49,10 +49,14 @@ class RCMPanel extends JPanel {
         this.setLayout(new BorderLayout());
         receipt = new JTextArea();
         receipt.setEditable(false);
+        receipt.setPreferredSize(new Dimension(200, 0));
+        receipt.setMargin(new Insets(10, 10, 10, 10));
         receipt.append("Receipt\n");
 
         info = new JTextArea();
         info.setEditable(false);
+        info.setPreferredSize(new Dimension(200, 0));
+        info.setMargin(new Insets(10, 10, 10, 10));
 
         info.append("ID: " + String.valueOf(myRCM.getId()) + "\n");
         info.append("Location: " + myRCM.getLocation() + "\n");

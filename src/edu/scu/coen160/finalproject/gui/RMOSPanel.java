@@ -4,7 +4,6 @@ import edu.scu.coen160.finalproject.system.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 
 class RMOSPanel extends JPanel {
 

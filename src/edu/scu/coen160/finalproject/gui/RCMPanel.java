@@ -19,6 +19,14 @@ class RCMPanel extends JPanel {
 
     private RecyclableItem myItem;
 
+    public void updateUI () {
+        updatePriceList();
+    }
+
+    private void updatePriceList() {
+        info.setText("Prices\n");
+        info.append(myRCM.printPrices());
+    }
     private void submitItem() {
         myRCM.recycleItem(myItem);
         myRCM.payOut(myRCM.calculateItemPrice(myItem));

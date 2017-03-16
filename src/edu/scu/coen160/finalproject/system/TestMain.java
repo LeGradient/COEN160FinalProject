@@ -30,8 +30,8 @@ public class TestMain {
         prices.put("plastic", 10.0);
         RecyclingMachine rcm = new RecyclingMachine(prices, 1000, 1000, "Santa Clara");
         RecyclableItem item = new RecyclableItem(5, "plastic");
-        rcm.recycleItem(item);
-        rcm.empty();
+        // rcm.recycleItem(item);
+        // rcm.empty();
 
         ArrayList<RecyclingMachine> machines = new ArrayList<RecyclingMachine>();
         machines.add(rcm);

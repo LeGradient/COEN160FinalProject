@@ -19,7 +19,7 @@ class RCMPanel extends JPanel {
 
     private RecyclableItem myItem;
 
-    public void updateRCMUI () {
+    public void refresh () {
         updatePriceList();
     }
 

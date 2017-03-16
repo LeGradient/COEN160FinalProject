@@ -18,16 +18,20 @@ public class RecyclingUI extends JFrame {
         myRCM2 = RCM2;
         myRMOS = RMOS;
 
+        RCMPanel myRCMPanel1 = new RCMPanel(myRCM1);
+        RCMPanel myRCMPanel2 = new RCMPanel(myRCM2);
         RMOSPanel myRMOSPanel = new RMOSPanel(myRMOS);
         tabs.addChangeListener(changeEvent -> {
+            myRCMPanel1.refresh();
+            myRCMPanel2.refresh();
             myRMOSPanel.refresh();
         });
 
         Container container = getContentPane();
         container.add(tabs);
 
-        tabs.addTab("RCM 0", new RCMPanel(myRCM1));
-        tabs.addTab("RCM 1", new RCMPanel(myRCM2));
+        tabs.addTab("RCM 0", myRCMPanel1);
+        tabs.addTab("RCM 1", myRCMPanel2);
         tabs.addTab("RMOS", myRMOSPanel);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

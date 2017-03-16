@@ -47,29 +47,17 @@ class RMOSPanel extends JPanel {
     private class InfoPanel extends JPanel {
 
         private class AddItemPanel extends JPanel {
-            private JComboBox<String> rcmList;
+            private RecyclingMonitor RMOS = RMOSPanel.this.RMOS;
             private JTextField materialField = new JTextField(10);
             private JTextField priceField = new JTextField(10);
             private JButton submitBtn = new JButton("Add Item");
 
             private AddItemPanel() {
-                // generate a list of RCM names
-                ArrayList<String> machineNames = new ArrayList<>();
-                for (RecyclingMachine machine : RMOSPanel.this.RMOS.getMachines()) {
-                    machineNames.add(machine.getTableName());
-                }
-                // initialize rcmList with the RCM names
-                this.rcmList = new JComboBox<>(machineNames.toArray(new String[0]));
-
                 // submit button action listener
                 this.submitBtn.addActionListener(actionEvent -> {
                     // update the RCM
                     int index = rcmList.getSelectedIndex();
-                    RecyclingMachine machine = RMOSPanel.this.RMOS.getMachines()[index];
-                    machine.setPrice(this.materialField.getText(), Double.parseDouble(this.priceField.getText()));
-
-                    // sanity check
-                    System.out.println(machine.getPrice(this.materialField.getText()));
+                    RMOS.setPrice(index, this.materialField.getText(), Double.parseDouble(this.priceField.getText()));
 
                     // clear the text fields
                     this.materialField.setText("");
@@ -77,10 +65,6 @@ class RMOSPanel extends JPanel {
                 });
 
                 this.setLayout(new GridLayout(5, 1));
-
-                JPanel rcmPanel = new JPanel(new FlowLayout());
-                rcmPanel.add(new JLabel("RCM ID: "));
-                rcmPanel.add(this.rcmList);
 
                 JPanel materialPanel = new JPanel(new FlowLayout());
                 materialPanel.add(new JLabel("Material: "));
@@ -90,8 +74,7 @@ class RMOSPanel extends JPanel {
                 pricePanel.add(new JLabel("Price: "));
                 pricePanel.add(this.priceField);
 
-                this.add(new JLabel("Add an Accepted Item to a Recycling Machine"));
-                this.add(rcmPanel);
+                this.add(new JLabel("Add an Item Type to a Recycling Machine"));
                 this.add(materialPanel);
                 this.add(pricePanel);
                 this.add(this.submitBtn);
@@ -115,8 +98,7 @@ class RMOSPanel extends JPanel {
 
                 JButton emptyBtn = new JButton("Empty");
                 emptyBtn.addActionListener(actionEvent -> {
-                    RecyclingMachine machine = RMOSPanel.this.RMOS.getMachineAt(InfoPanel.this.rcmList.getSelectedIndex());
-                    machine.empty();
+                    this.RMOS.empty(InfoPanel.this.rcmList.getSelectedIndex());
                     this.update();
                 });
 
@@ -126,9 +108,8 @@ class RMOSPanel extends JPanel {
 
                 JButton moneyBtn = new JButton("Add Money");
                 moneyBtn.addActionListener(actionEvent -> {
-                    RecyclingMachine machine = RMOSPanel.this.RMOS.getMachineAt(InfoPanel.this.rcmList.getSelectedIndex());
                     double money = Double.parseDouble(moneyField.getText());
-                    machine.addMoney(money);
+                    this.RMOS.addMoney(InfoPanel.this.rcmList.getSelectedIndex(), money);
                     this.update();
                 });
 

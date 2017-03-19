@@ -221,18 +221,18 @@ class RMOSPanel extends JPanel {
             private DefaultKeyedValues2DDataset createDataset(int typeOfChart) {
                 if (typeOfChart == 0) {
                     DefaultKeyedValues2DDataset dataset = new DefaultKeyedValues2DDataset();
-                    dataset.addValue(RMOS.totalItemsCollectedBoundless(0), "RCM1", "Total Items Collected");
-                    dataset.addValue(RMOS.totalItemsCollectedBoundless(1), "RCM2", "Total Items Collected");
+                    dataset.addValue(RMOS.totalItemsCollected(0), "RCM1", "Total Items Collected");
+                    dataset.addValue(RMOS.totalItemsCollected(1), "RCM2", "Total Items Collected");
                     return dataset;
                 } else if (typeOfChart == 1) {
                     DefaultKeyedValues2DDataset dataset = new DefaultKeyedValues2DDataset();
-                    dataset.addValue(RMOS.totalWeightCollectedBoundless(0), "RCM1", "Total Weight Collected");
-                    dataset.addValue(RMOS.totalWeightCollectedBoundless(1), "RCM2", "Total Weight Collected");
+                    dataset.addValue(RMOS.totalWeightCollected(0), "RCM1", "Total Weight Collected");
+                    dataset.addValue(RMOS.totalWeightCollected(1), "RCM2", "Total Weight Collected");
                     return dataset;
                 } else {
                     DefaultKeyedValues2DDataset dataset = new DefaultKeyedValues2DDataset();
-                    dataset.addValue(RMOS.totalValueIssuedBoundless(0), "RCM1", "Total Value Issued");
-                    dataset.addValue(RMOS.totalValueIssuedBoundless(1), "RCM2", "Total Value Issued");
+                    dataset.addValue(RMOS.totalValueIssued(0), "RCM1", "Total Value Issued");
+                    dataset.addValue(RMOS.totalValueIssued(1), "RCM2", "Total Value Issued");
                     return dataset;
                 }
             }

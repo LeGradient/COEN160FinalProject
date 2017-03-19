@@ -5,11 +5,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Set;
+import java.util.*;
 
-public class RecyclingMachine {
+public class RecyclingMachine extends Observable {
 
     // keep track of the number of existing recycling machines
     // used to assign unique IDs to each machine
@@ -33,17 +31,59 @@ public class RecyclingMachine {
 
     // GETTERS & SETTERS
 
-    public String getTableName() { return "RCM" + ((Integer)id).toString(); }
-    public String getLocation() { return this.location; }
-    public int getId() { return this.id; }
-    public double getCapacity() { return this.capacity; }
-    public double getWeight() { return Double.valueOf(RecyclingMachine.moneyFormat.format(this.weight)); }
-    public double getMoney() { return Double.valueOf(RecyclingMachine.moneyFormat.format(this.money)); }
-    public void addMoney(double money) { this.money += money; }
-    public double getPrice(String material) { return this.prices.get(material); }
-    public void setPrice(String material, double price) { prices.put(material, price); }
-    public boolean isSession() { return isSession; }
-    public Set<String> getAcceptableItems() { return this.prices.keySet(); }
+    public String getTableName() {
+        return "RCM" + ((Integer) id).toString();
+    }
+
+    public String getLocation() {
+        return this.location;
+    }
+
+    public int getId() {
+        return this.id;
+    }
+
+    public double getCapacity() {
+        return this.capacity;
+    }
+
+    public double getWeight() {
+        return Double.valueOf(RecyclingMachine.moneyFormat.format(this.weight));
+    }
+
+    public void setWeight(double weight) {
+        this.weight += weight;
+        setChanged();
+        notifyObservers();
+    }
+
+    public double getMoney() {
+        return Double.valueOf(RecyclingMachine.moneyFormat.format(this.money));
+    }
+
+    public void addMoney(double money) {
+        this.money += money;
+        setChanged();
+        notifyObservers();
+    }
+
+    public double getPrice(String material) {
+        return this.prices.get(material);
+    }
+
+    public void setPrice(String material, double price) {
+        prices.put(material, price);
+        setChanged();
+        notifyObservers();
+    }
+
+    public boolean isSession() {
+        return isSession;
+    }
+
+    public Set<String> getAcceptableItems() {
+        return this.prices.keySet();
+    }
 
     // CONSTRUCTOR
 
@@ -81,7 +121,7 @@ public class RecyclingMachine {
     }
 
     public void recycleItem(RecyclableItem item) throws IllegalArgumentException {
-        if (this.weight + item.getWeight() > this.capacity) {
+        if (getWeight() + item.getWeight() > getCapacity()) {
             throw new IllegalArgumentException("Recycling machine capacity exceeded");
         }
         double price = calculateItemPrice(item);
@@ -90,7 +130,7 @@ public class RecyclingMachine {
             this.sessionRecords.add(record);
             this.sessionItems.add(item);
         } else {
-            this.weight += item.getWeight();
+            setWeight(getWeight() + item.getWeight());
             record.writeToTable(this.getTableName());
         }
     }
@@ -118,7 +158,7 @@ public class RecyclingMachine {
     }
 
     public void empty() {
-        this.weight = 0;
+        setWeight(0);
         TransactionRecord record = new TransactionRecord(null, 0);
         record.writeToTable(this.getTableName());
     }

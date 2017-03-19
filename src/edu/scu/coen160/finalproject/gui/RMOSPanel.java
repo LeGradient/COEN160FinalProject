@@ -4,6 +4,8 @@ import edu.scu.coen160.finalproject.system.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Observable;
+import java.util.Observer;
 
 import org.jfree.chart.*;
 import org.jfree.chart.axis.*;
@@ -12,8 +14,9 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.general.DefaultKeyedValues2DDataset;
 
-class RMOSPanel extends JPanel {
+class RMOSPanel extends JPanel implements Observer {
 
+    // Inner Classes
     private class LoginPanel extends JPanel {
         private JLabel descLabel = new JLabel("Enter your login credentials below:");
         private JTextField userField = new JTextField(10);
@@ -267,10 +270,12 @@ class RMOSPanel extends JPanel {
         }
     }
 
+    // Fields
     private RecyclingMonitor RMOS;
     private LoginPanel loginPanel = new LoginPanel();
     private InfoPanel infoPanel;
 
+    // Methods
     RMOSPanel(RecyclingMonitor RMOS) {
         this.RMOS = RMOS;
         this.infoPanel = new InfoPanel();
@@ -303,7 +308,7 @@ class RMOSPanel extends JPanel {
         });
     }
 
-    void refresh() {
+    public void update(Observable observable, Object arg) {
         infoPanel.refresh();
     }
 }

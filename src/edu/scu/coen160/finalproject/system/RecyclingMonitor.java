@@ -4,7 +4,6 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class RecyclingMonitor {
-    // DATA MEMBERS
 
     /**
      * Username for this RMOS.
@@ -47,14 +46,30 @@ public class RecyclingMonitor {
 
     // GETTERS & SETTERS
 
-    public double getWeight(int index) { return machines.get(index).getWeight(); }
+    public double getWeight(int index) {
+        return machines.get(index).getWeight();
+    }
+
     public double getCapacity(int index) {
         return machines.get(index).getCapacity();
     }
-    public void empty(int index) { machines.get(index).empty(); }
-    public double getMoney(int index) { return machines.get(index).getMoney(); }
-    public void addMoney(int index, double money) { machines.get(index).addMoney(money); }
-    public void setPrice(int index, String material, double price) { machines.get(index).setPrice(material, price); }
+
+    public void empty(int index) {
+        machines.get(index).empty();
+    }
+
+    public double getMoney(int index) {
+        return machines.get(index).getMoney();
+    }
+
+    public void addMoney(int index, double money) {
+        machines.get(index).addMoney(money);
+    }
+
+    public void setPrice(int index, String material, double price) {
+        machines.get(index).setPrice(material, price);
+    }
+
     public String[] getMachineNames() {
         ArrayList<String> names = new ArrayList<>();
         for (RecyclingMachine machine : machines) {

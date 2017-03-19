@@ -95,10 +95,14 @@ class RMOSPanel extends JPanel implements Observer {
          * Sub-region of info panel for adding items and changing their prices.
          */
         private class AddItemPanel extends JPanel {
-            private RecyclingMonitor RMOS = RMOSPanel.this.RMOS;    /** RMOS back-end object */
-            private JTextField materialField = new JTextField(10);  /** item material name text field */
-            private JTextField priceField = new JTextField(10);     /** item price value text field */
-            private JButton submitBtn = new JButton("Add Item");    /** button to add/change item/price */
+            /** RMOS back-end object */
+            private RecyclingMonitor RMOS = RMOSPanel.this.RMOS;
+            /** item material name text field */
+            private JTextField materialField = new JTextField(10);
+            /** item price value text field */
+            private JTextField priceField = new JTextField(10);
+            /** button to add/change item/price */
+            private JButton submitBtn = new JButton("Add Item");
 
             /**
              * Constructor.

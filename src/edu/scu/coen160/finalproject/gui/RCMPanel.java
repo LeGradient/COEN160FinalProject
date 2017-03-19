@@ -4,9 +4,9 @@ import edu.scu.coen160.finalproject.system.*;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Random;
+import java.util.*;
 
-class RCMPanel extends JPanel {
+class RCMPanel extends JPanel implements Observer {
     private JButton toggleSessionButton;
     private JButton endSessionButton;
     private JButton weighButton;
@@ -19,14 +19,11 @@ class RCMPanel extends JPanel {
 
     private RecyclableItem myItem;
 
-    public void refresh () {
-        updatePriceList();
-    }
-
-    private void updatePriceList() {
+    public void update(Observable o, Object arg) {
         info.setText("Prices\n");
         info.append(myRCM.printPrices());
     }
+
     private void submitItem() {
         myRCM.recycleItem(myItem);
         myRCM.payOut(myRCM.calculateItemPrice(myItem));
@@ -45,6 +42,7 @@ class RCMPanel extends JPanel {
 
     RCMPanel(RecyclingMachine RCM) {
         myRCM = RCM;
+        myRCM.addObserver(this);
 
         this.setLayout(new BorderLayout());
         receipt = new JTextArea();

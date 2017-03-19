@@ -3,6 +3,11 @@ package edu.scu.coen160.finalproject.system;
 import java.sql.*;
 import java.util.ArrayList;
 
+/**
+ * RecyclingMonitor class
+ *
+ * Represents an RMOS. Allows users to login, and manage a number of RCMs as well as get statistics about them.
+ */
 public class RecyclingMonitor {
 
     /**
@@ -81,16 +86,26 @@ public class RecyclingMonitor {
 
     // OTHER METHODS
 
+    /**
+     * Allows user to login to the RMOS.
+     *
+     * @param username  Username to login with.
+     * @param password  Password to login with.
+     * @return          true if login succeeded; otherwise false.
+     */
     public boolean login(String username, String password) {
+        // if the username and password match, log in and return true
         if (this.username.compareToIgnoreCase(username) == 0 && this.password.compareTo(password) == 0) {
             this.isLoggedIn = true;
             return true;
         }
+
+        // return false if login was unsuccessful
         return false;
     }
 
     /**
-     * Returns the last time an RCM was emptied.
+     * Gets the last time an RCM was emptied.
      *
      * Constructs a SQL query to get the most recent 'empty' transaction for the specified RCM.
      *
@@ -98,9 +113,15 @@ public class RecyclingMonitor {
      * @return      A String containing the timestamp of when the specified RCM was last emptied.
      */
     public String lastEmptied(int index) {
+        // string to hold the result
         String result;
+
+        // try connecting to the database
         try (Connection connection = DriverManager.getConnection(TransactionRecord.database)) {
+            // if successful
             Statement stmt = connection.createStatement();
+
+            // construct the SQL query and get the results
             String sql = "SELECT MAX(stamp) FROM " + machines.get(index).getTableName() + " WHERE price IS NULL;";
             ResultSet resultset = stmt.executeQuery(sql);
             result = resultset.getString(1);  // SQL result columns are 1-indexed
@@ -110,14 +131,28 @@ public class RecyclingMonitor {
         return result;
     }
 
+    /**
+     * Gets the total weight of items recycled by an RCM.
+     *
+     * Constructs a SQL query to get the total weight of recycled items for the specified RCM.
+     *
+     * @param index The index of the RCM you want to check the total for.
+     * @return      The total weight of the items recycled by that RCM.
+     */
     public double totalWeightCollected(int index) {
+        // double to hold the result
         double result;
+
+        // try connecting to the database
         try (Connection connection = DriverManager.getConnection(TransactionRecord.database)) {
+            //if successful
             Statement stmt = connection.createStatement();
+
+            // construct the SQL query and get the results
             String sql =
                     "SELECT SUM(weight) " +
-                            "FROM " + machines.get(index).getTableName() + " " +
-                            "WHERE price IS NOT NULL;";
+                    "FROM " + machines.get(index).getTableName() + " " +
+                    "WHERE price IS NOT NULL;";
             ResultSet resultset = stmt.executeQuery(sql);
             result = resultset.getDouble(1);  // SQL result columns are 1-indexed
         } catch (SQLException e) {
@@ -126,14 +161,28 @@ public class RecyclingMonitor {
         return result;
     }
 
+    /**
+     * Gets the total number of items recycled by an RCM.
+     *
+     * Constructs a SQL query to get the total number of items recycled by the specified RCM.
+     *
+     * @param index The index of the RCM you want to check the total for.
+     * @return      The total number of items recycled by that RCM.
+     */
     public int totalItemsCollected(int index) {
+        // int to hold result
         int result;
+
+        // try connecting to the database
         try (Connection connection = DriverManager.getConnection(TransactionRecord.database)) {
+            // if successful
             Statement stmt = connection.createStatement();
+
+            // construct the SQL query and get the results
             String sql =
                     "SELECT COUNT(*) " +
-                            "FROM " + machines.get(index).getTableName() + " " +
-                            "WHERE price IS NOT NULL;";
+                    "FROM " + machines.get(index).getTableName() + " " +
+                    "WHERE price IS NOT NULL;";
             ResultSet resultset = stmt.executeQuery(sql);
             result = resultset.getInt(1);  // SQL result columns are 1-indexed
         } catch (SQLException e) {
@@ -142,14 +191,28 @@ public class RecyclingMonitor {
         return result;
     }
 
+    /**
+     * Gets the total value issued by an RCM.
+     *
+     * Constructs a SQL query to get the total value issued by the specified RCM.
+     *
+     * @param index The index of the RCM you want to check the total for.
+     * @return      The total value issued by that RCM.
+     */
     public double totalValueIssued(int index) {
+        // double to hold the result
         double result;
+
+        // try connecting to the database
         try (Connection connection = DriverManager.getConnection(TransactionRecord.database)) {
+            // if successful
             Statement stmt = connection.createStatement();
+
+            // construct the SQL query and get the results
             String sql =
                     "SELECT SUM(price) " +
-                            "FROM " + machines.get(index).getTableName() + " " +
-                            "WHERE price IS NOT NULL;";
+                    "FROM " + machines.get(index).getTableName() + " " +
+                    "WHERE price IS NOT NULL;";
             ResultSet resultset = stmt.executeQuery(sql);
             result = resultset.getDouble(1);  // SQL result columns are 1-indexed
         } catch (SQLException e) {
@@ -157,17 +220,4 @@ public class RecyclingMonitor {
         }
         return result;
     }
-
-    public int getMostUsedMachine() {
-        int max = 0;
-        int id = -1;
-        for (int i = 0; i < machines.size(); i++) {
-            if (totalItemsCollected(i) > max) {
-                max = totalItemsCollected(i);
-                id = machines.get(i).getId();
-            }
-        }
-        return id;
-    }
-
 }

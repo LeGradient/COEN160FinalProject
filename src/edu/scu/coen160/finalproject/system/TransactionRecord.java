@@ -22,8 +22,13 @@ class TransactionRecord {
 
     // GETTERS & SETTERS
 
-    public double getPrice() { return this.price; }
-    public double getWeight() { return item.getWeight(); }
+    public double getPrice() {
+        return this.price;
+    }
+
+    public double getWeight() {
+        return item.getWeight();
+    }
 
 
     // CONSTRUCTOR

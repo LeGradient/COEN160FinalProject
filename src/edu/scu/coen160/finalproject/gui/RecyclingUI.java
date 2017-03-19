@@ -30,12 +30,8 @@ public class RecyclingUI extends JFrame {
         RCMPanel myRCMPanel2 = new RCMPanel(RCM2);
         RMOSPanel myRMOSPanel = new RMOSPanel(RMOS);
 
-        // Add the UI panels as observers of both RCMs
-        RCM1.addObserver(myRCMPanel1);
-        RCM1.addObserver(myRCMPanel2);
+        // Bind the RMOS UI as an observer of both RCMs
         RCM1.addObserver(myRMOSPanel);
-        RCM2.addObserver(myRCMPanel1);
-        RCM2.addObserver(myRCMPanel2);
         RCM2.addObserver(myRMOSPanel);
 
         // Add the UIs to the tabbed layout

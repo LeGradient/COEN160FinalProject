@@ -33,7 +33,7 @@ public class RecyclingMonitor {
      *
      * @param machines  An ArrayList of RCMs for this RMOS to manage.
      * @param username  The username of this RMOS.
-     * @param password  The password of thsi RMOS.
+     * @param password  The password of this RMOS.
      */
     public RecyclingMonitor(ArrayList<RecyclingMachine> machines, String username, String password) {
         // assign the username, password, and RCMs that this RMOS controls

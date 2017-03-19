@@ -15,15 +15,41 @@ import java.awt.*;
 import java.util.Observable;
 import java.util.Observer;
 
+import org.jfree.chart.*;
+import org.jfree.chart.axis.*;
+import org.jfree.chart.block.BlockBorder;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.data.general.DefaultKeyedValues2DDataset;
+
+/**
+ * RMOS UI class
+ * Contains components to select an RCM, display relevant information
+ * about the selected machine, and edit the properties of the selected
+ * machine.
+ */
 class RMOSPanel extends JPanel implements Observer {
 
-    // Inner Classes
+    /**
+     * Login screen UI
+     */
     private class LoginPanel extends JPanel {
+        /**
+         * Description label.
+         * Also displays error message on failed login attempt.
+         */
         private JLabel descLabel = new JLabel("Enter your login credentials below:");
+        /** username text field */
         private JTextField userField = new JTextField(10);
+        /** password text field */
         private JPasswordField passField = new JPasswordField(10);
+        /** login button */
         private JButton loginButton = new JButton("Login");
 
+        /**
+         * Constructor.
+         * Initializes UI components and layout.
+         */
         private LoginPanel() {
             this.setLayout(new GridLayout(4, 1));
 
@@ -41,11 +67,17 @@ class RMOSPanel extends JPanel implements Observer {
             this.add(this.loginButton);
         }
 
+        /**
+         * Defines behavior on failed login attempt
+         */
         private void badCredentials() {
             this.descLabel.setText("Login failed! Try again.");
             this.descLabel.setForeground(Color.RED);
         }
 
+        /**
+         * Removes user input between uses
+         */
         private void reset() {
             this.descLabel.setText("Enter your login credentials below:");
             this.descLabel.setForeground(Color.BLACK);
@@ -54,14 +86,24 @@ class RMOSPanel extends JPanel implements Observer {
         }
     }
 
+    /**
+     * Main RMOS display and control UI
+     */
     private class InfoPanel extends JPanel {
 
+        /**
+         * Sub-region of info panel for adding items and changing their prices.
+         */
         private class AddItemPanel extends JPanel {
-            private RecyclingMonitor RMOS = RMOSPanel.this.RMOS;
-            private JTextField materialField = new JTextField(10);
-            private JTextField priceField = new JTextField(10);
-            private JButton submitBtn = new JButton("Add Item");
+            private RecyclingMonitor RMOS = RMOSPanel.this.RMOS;    /** RMOS back-end object */
+            private JTextField materialField = new JTextField(10);  /** item material name text field */
+            private JTextField priceField = new JTextField(10);     /** item price value text field */
+            private JButton submitBtn = new JButton("Add Item");    /** button to add/change item/price */
 
+            /**
+             * Constructor.
+             * Initializes UI components and defines on-click behavior for submit button
+             */
             private AddItemPanel() {
                 // title label wrapper panel
                 JPanel titleWrapper = new JPanel();
@@ -97,12 +139,22 @@ class RMOSPanel extends JPanel implements Observer {
             }
         }
 
+        /**
+         * Sub-region of info panel for displaying capacity & money info,
+         * as well as providing facilities for emptying the machine and
+         * restocking the money supply.
+         */
         private class CheckStatusPanel extends JPanel {
-            private RecyclingMonitor RMOS = RMOSPanel.this.RMOS;
-            private JLabel capacityLabel = new JLabel();
-            private JLabel moneyLabel = new JLabel();
-            private JLabel lastEmpty = new JLabel();
+            private RecyclingMonitor RMOS = RMOSPanel.this.RMOS;    /** RMOS back-end object */
+            private JLabel capacityLabel = new JLabel();            /** Label to display weight/capacity ratio */
+            private JLabel moneyLabel = new JLabel();               /** Label to display current money supply */
+            private JLabel lastEmpty = new JLabel();                /** Label to display timestamp of last empty operation */
 
+            /**
+             * Constructor.
+             * Initializes UI components and defines behavior for
+             * empty and add money buttons.
+             */
             private CheckStatusPanel() {
                 this.setLayout(new GridLayout(3, 1));
 
@@ -152,6 +204,10 @@ class RMOSPanel extends JPanel implements Observer {
                 this.refresh();
             }
 
+            /**
+             * Called by top-level RMOS UI on observer update.
+             * Fetches latest information to be displayed from the RCMs.
+             */
             private void refresh() {
                 int i = InfoPanel.this.rcmList.getSelectedIndex();
                 this.capacityLabel.setText("Capacity: " + this.RMOS.getWeight(i) + " / " + this.RMOS.getCapacity(i));
@@ -160,6 +216,10 @@ class RMOSPanel extends JPanel implements Observer {
             }
         }
 
+        /**
+         * Sub-region of the info panel for displaying statistical
+         * information in bar chart form.
+         */
         private class StatisticsPanel extends JPanel {
             JFreeChart itemsChart;
             JFreeChart weightChart;
@@ -242,13 +302,20 @@ class RMOSPanel extends JPanel implements Observer {
             }
         }
 
+        /** RMOS back-end object */
         private RecyclingMonitor RMOS = RMOSPanel.this.RMOS;
+        /** Dropdown list for selecting an RCM */
         private JComboBox<String> rcmList = new JComboBox<>(this.RMOS.getMachineNames());
+        /** switches active panel back to the login panel */
         private JButton logoutBtn = new JButton("Logout");
         private AddItemPanel addItemPanel = new AddItemPanel();
         private CheckStatusPanel checkStatusPanel = new CheckStatusPanel();
         private StatisticsPanel statisticsPanel = new StatisticsPanel();
 
+        /**
+         * Constructor.
+         * Initializes UI components.
+         */
         private InfoPanel() {
             this.setLayout(new BorderLayout());
 
@@ -265,18 +332,30 @@ class RMOSPanel extends JPanel implements Observer {
             this.add(this.statisticsPanel, BorderLayout.PAGE_END);
         }
 
+        /**
+         * Called on top-level RMOS UI observer update.
+         * Calls the refresh methods for the status and statistics sub-panels.
+         */
         private void refresh() {
             this.checkStatusPanel.refresh();
             this.statisticsPanel.refresh();
         }
     }
 
-    // Fields
+    /** RMOS back-end object */
     private RecyclingMonitor RMOS;
+    /** JPanel to display the login screen */
     private LoginPanel loginPanel = new LoginPanel();
+    /** JPanel to display RMOS controls after a successful login */
     private InfoPanel infoPanel;
 
-    // Methods
+    /**
+     * Constructor.
+     * Binds the UI to an RMOS back-end object.
+     * Initializes login and info panels.
+     * Defines behavior for logging in and out of the RMOS.
+     * @param RMOS  RecyclingMonitor back-end object
+     */
     RMOSPanel(RecyclingMonitor RMOS) {
         this.RMOS = RMOS;
         this.infoPanel = new InfoPanel();
@@ -309,6 +388,12 @@ class RMOSPanel extends JPanel implements Observer {
         });
     }
 
+    /**
+     * Observer update method.
+     * Called on a state change in one of the two RCMs the RMOS monitors.
+     * @param observable    unused
+     * @param arg           unused
+     */
     public void update(Observable observable, Object arg) {
         infoPanel.refresh();
     }

@@ -3,48 +3,49 @@ package edu.scu.coen160.finalproject.gui;
 import edu.scu.coen160.finalproject.system.*;
 
 import javax.swing.*;
-import java.awt.*;
 
+/**
+ * Top-level UI Class
+ * Contains two RCM UI panels and an RMOS UI panel
+ */
 public class RecyclingUI extends JFrame {
-    private RecyclingMachine myRCM1;
-    private RecyclingMachine myRCM2;
-    private RecyclingMonitor myRMOS;
 
-    private JTabbedPane tabs = new JTabbedPane();
+    /**
+     * Constructor.
+     * Binds the UI to the relevant back-end components and initializes
+     * a tabbed layout to present them all.
+     * @param RCM1  RecyclingMachine #1 back-end object
+     * @param RCM2  RecyclingMachine #2 back-end object
+     * @param RMOS  RecyclingMonitor back-end object
+     */
     public RecyclingUI(RecyclingMachine RCM1, RecyclingMachine RCM2, RecyclingMonitor RMOS) {
         super("Recycling Simulation");
 
-        myRCM1 = RCM1;
-        myRCM2 = RCM2;
-        myRMOS = RMOS;
+        // Create a tabbed layout at the top level
+        JTabbedPane tabs = new JTabbedPane();
+        this.getContentPane().add(tabs);
 
-        RCMPanel myRCMPanel1 = new RCMPanel(myRCM1);
-        RCMPanel myRCMPanel2 = new RCMPanel(myRCM2);
-        RMOSPanel myRMOSPanel = new RMOSPanel(myRMOS);
-//        tabs.addChangeListener(changeEvent -> {
-//            myRCMPanel1.refresh();
-//            myRCMPanel2.refresh();
-//            myRMOSPanel.refresh();
-//        });
+        // Construct two RCM UIs and an RMOS UI
+        RCMPanel myRCMPanel1 = new RCMPanel(RCM1);
+        RCMPanel myRCMPanel2 = new RCMPanel(RCM2);
+        RMOSPanel myRMOSPanel = new RMOSPanel(RMOS);
 
-        Container container = getContentPane();
-        container.add(tabs);
+        // Add the UI panels as observers of both RCMs
+        RCM1.addObserver(myRCMPanel1);
+        RCM1.addObserver(myRCMPanel2);
+        RCM1.addObserver(myRMOSPanel);
+        RCM2.addObserver(myRCMPanel1);
+        RCM2.addObserver(myRCMPanel2);
+        RCM2.addObserver(myRMOSPanel);
 
+        // Add the UIs to the tabbed layout
         tabs.addTab("RCM 0", myRCMPanel1);
         tabs.addTab("RCM 1", myRCMPanel2);
         tabs.addTab("RMOS", myRMOSPanel);
 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-//        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-//        int height = screenSize.height;
-//        int width = screenSize.width;
-
         setSize(1920, 800);
         setLocationRelativeTo(null);
-
-
-
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
     }
 }

@@ -15,13 +15,6 @@ import java.awt.*;
 import java.util.Observable;
 import java.util.Observer;
 
-import org.jfree.chart.*;
-import org.jfree.chart.axis.*;
-import org.jfree.chart.block.BlockBorder;
-import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.renderer.category.BarRenderer;
-import org.jfree.data.general.DefaultKeyedValues2DDataset;
-
 /**
  * RMOS UI class
  * Contains components to select an RCM, display relevant information

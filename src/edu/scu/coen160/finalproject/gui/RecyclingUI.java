@@ -1,6 +1,7 @@
 package edu.scu.coen160.finalproject.gui;
 
-import edu.scu.coen160.finalproject.system.*;
+import edu.scu.coen160.finalproject.system.RecyclingMachine;
+import edu.scu.coen160.finalproject.system.RecyclingMonitor;
 
 import javax.swing.*;
 
@@ -41,7 +42,7 @@ public class RecyclingUI extends JFrame {
 
         setSize(1920, 800);
         setLocationRelativeTo(null);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);
     }
 }

@@ -1,10 +1,13 @@
 package edu.scu.coen160.finalproject.gui;
 
-import edu.scu.coen160.finalproject.system.*;
+import edu.scu.coen160.finalproject.system.RecyclableItem;
+import edu.scu.coen160.finalproject.system.RecyclingMachine;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
+import java.util.Observable;
+import java.util.Observer;
+import java.util.Random;
 
 class RCMPanel extends JPanel implements Observer {
     private JButton toggleSessionButton;

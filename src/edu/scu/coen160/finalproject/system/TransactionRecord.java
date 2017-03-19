@@ -1,9 +1,9 @@
 package edu.scu.coen160.finalproject.system;
 
-import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 // not sure if this should be public or package protected
 class TransactionRecord {

@@ -1,18 +1,19 @@
 package edu.scu.coen160.finalproject.gui;
 
-import edu.scu.coen160.finalproject.system.*;
+import edu.scu.coen160.finalproject.system.RecyclingMonitor;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.block.BlockBorder;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.data.general.DefaultKeyedValues2DDataset;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Observable;
 import java.util.Observer;
-
-import org.jfree.chart.*;
-import org.jfree.chart.axis.*;
-import org.jfree.chart.block.BlockBorder;
-import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.renderer.category.BarRenderer;
-import org.jfree.data.general.DefaultKeyedValues2DDataset;
 
 class RMOSPanel extends JPanel implements Observer {
 
@@ -285,7 +286,7 @@ class RMOSPanel extends JPanel implements Observer {
         // login button action listener
         this.loginPanel.loginButton.addActionListener(actionEvent -> {
             // attempt to log in with the currently entered credentials
-            if (this.RMOS.login(this.loginPanel.userField.getText(), this.loginPanel.passField.getText())) {
+            if (this.RMOS.login(this.loginPanel.userField.getText(), new String (this.loginPanel.passField.getPassword()))) {
                 // login succeeded
                 // switch from the login panel to the info panel
                 this.loginPanel.reset();

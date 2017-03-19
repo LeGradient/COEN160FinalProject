@@ -5,27 +5,67 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Observable;
+import java.util.Set;
 
 public class RecyclingMachine extends Observable {
 
-    // keep track of the number of existing recycling machines
-    // used to assign unique IDs to each machine
+    /**
+     * Keeps track of the number of existing RCMs.
+     * Used to assign unique IDs to each RCM.
+     */
     private static int objCount = 0;
 
-    // format money values
-    private static DecimalFormat moneyFormat = new DecimalFormat("####0.00");
+    /**
+     * Used to round money and weight values to 2 digits.
+     */
+    private static DecimalFormat displayFormat = new DecimalFormat("####0.00");
 
-    // FIELDS
-
+    /**
+     * Location of this RCM.
+     */
     private String location;
+
+    /**
+     * ID of this RCM.
+     */
     private int id;
+
+    /**
+     * Maximum capacity of this RCM.
+     */
     private double capacity;
+
+    /**
+     * Current weight of the items recycled in this RCM.
+     */
     private double weight;
+
+    /**
+     * Amount of money available to dispense in this RCM.
+     */
     private double money;
+
+    /**
+     * A HashMap of accepted materials and their prices for this RCM.
+     */
     private HashMap<String, Double> prices;
+
+    /**
+     * A flag to indicate whether or not this RCM is in a session.
+     */
     private boolean isSession;
+
+    /**
+     * An ArrayList of transactions that took place in a session.
+     */
     private ArrayList<TransactionRecord> sessionRecords;
+
+    /**
+     * An ArrayList of items that were recycled in a session.
+     */
     private ArrayList<RecyclableItem> sessionItems;
 
 
@@ -48,7 +88,7 @@ public class RecyclingMachine extends Observable {
     }
 
     public double getWeight() {
-        return Double.valueOf(RecyclingMachine.moneyFormat.format(this.weight));
+        return Double.valueOf(RecyclingMachine.displayFormat.format(this.weight));
     }
 
     public void setWeight(double weight) {
@@ -58,7 +98,7 @@ public class RecyclingMachine extends Observable {
     }
 
     public double getMoney() {
-        return Double.valueOf(RecyclingMachine.moneyFormat.format(this.money));
+        return Double.valueOf(RecyclingMachine.displayFormat.format(this.money));
     }
 
     public void addMoney(double money) {
@@ -111,15 +151,27 @@ public class RecyclingMachine extends Observable {
         }
     }
 
-
-    // OTHER METHODS
-
+    /**
+     * Calculates the value of an item based on its material, weight, price.
+     *
+     * @param item  The item to calculate the value of.
+     * @return      The value of the item.
+     */
     public double calculateItemPrice(RecyclableItem item) {
         double result = getPrice(item.getMaterial()) * item.getWeight();
-        result = Double.valueOf(RecyclingMachine.moneyFormat.format(result));
+        result = Double.valueOf(RecyclingMachine.displayFormat.format(result));
         return result;
     }
 
+    /**
+     * Recycles an item.
+     *
+     * Checks if the machine has sufficient capacity to hold the item. Gets the value of the item and writes a
+     * transaction to the database. Updates the weight of the RCM.
+     *
+     * @param item                      The item to recycle.
+     * @throws IllegalArgumentException Throws an exception if the machine does not have sufficient capacity.
+     */
     public void recycleItem(RecyclableItem item) throws IllegalArgumentException {
         if (getWeight() + item.getWeight() > getCapacity()) {
             throw new IllegalArgumentException("Recycling machine capacity exceeded");
@@ -135,17 +187,30 @@ public class RecyclingMachine extends Observable {
         }
     }
 
+    /**
+     * Starts a new session.
+     *
+     * Cancels any previous session and sets the boolean flag for a session to true.
+     */
     public void startSession() {
         cancelSession();
         this.isSession = true;
     }
 
+    /**
+     * Cancels the current session.
+     *
+     * Sets the boolean flag for a session to false, and creates empty list of transactions and items for a new session.
+     */
     public void cancelSession() {
         this.sessionRecords = new ArrayList<>();
         this.sessionItems = new ArrayList<>();
         this.isSession = false;
     }
 
+    /**
+     * Recycles all the items from a session and stores transactions in the database for each of them.
+     */
     public void submitSession() {
         assert this.isSession();
         this.isSession = false;
@@ -157,13 +222,25 @@ public class RecyclingMachine extends Observable {
         }
     }
 
+    /**
+     * Empties the RCM.
+     *
+     * Sets the current weight of the RCM to zero and stores a transaction in the database to indicate when the
+     * RCM was emptied.
+     */
     public void empty() {
         setWeight(0);
         TransactionRecord record = new TransactionRecord(null, 0);
         record.writeToTable(this.getTableName());
     }
 
-    // payOut for single item
+    /**
+     * Pays out an amount of money to the user in exchange for their item. Takes money from the RCM's funds.
+     * If funds are insufficient, pays the remaining difference in the form of a coupon.
+     *
+     * @param price The price to pay out.
+     * @return      The amount of money paid directly to the user.
+     */
     public double payOut(double price) {
         double owedValue = price;
         if (this.money - owedValue < 0) {
@@ -178,7 +255,12 @@ public class RecyclingMachine extends Observable {
         return owedValue;
     }
 
-    // payOut for a session
+    /**
+     * Pays out money to the user after a session. Takes money from the RCM's funds.
+     * If funds are insufficient, pays the remaining difference in the form of a coupon.
+     *
+     * @return  The amount of money paid directly to the user.
+     */
     public double payOut() {
         assert this.isSession();
         double owedValue = 0;
@@ -193,6 +275,11 @@ public class RecyclingMachine extends Observable {
         // TODO pay out a coupon of value amount
     }
 
+    /**
+     * Returns a string containing all the items accepted by this RCM and their prices.
+     *
+     * @return  A string containing all the items accepted by this RCM and their prices.
+     */
     public String printPrices() {
         String result = "";
         for (HashMap.Entry<String, Double> entry : prices.entrySet()) {

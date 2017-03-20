@@ -8,9 +8,7 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.block.BlockBorder;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.renderer.category.BarRenderer;
-import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.general.DefaultKeyedValues2DDataset;
 
 import javax.swing.*;
 import java.awt.*;
@@ -144,10 +142,17 @@ class RMOSPanel extends JPanel implements Observer {
          * restocking the money supply.
          */
         private class CheckStatusPanel extends JPanel {
-            private RecyclingMonitor RMOS = RMOSPanel.this.RMOS;    /** RMOS back-end object */
-            private JLabel capacityLabel = new JLabel();            /** Label to display weight/capacity ratio */
-            private JLabel moneyLabel = new JLabel();               /** Label to display current money supply */
-            private JLabel lastEmpty = new JLabel();                /** Label to display timestamp of last empty operation */
+            /** RMOS back-end object */
+            private RecyclingMonitor RMOS = RMOSPanel.this.RMOS;
+
+            /** Label to display weight/capacity ratio */
+            private JLabel capacityLabel = new JLabel();
+
+            /** Label to display current money supply */
+            private JLabel moneyLabel = new JLabel();
+
+            /** Label to display timestamp of last empty operation */
+            private JLabel lastEmpty = new JLabel();
 
             /**
              * Constructor.
@@ -158,9 +163,7 @@ class RMOSPanel extends JPanel implements Observer {
                 this.setLayout(new GridLayout(3, 1));
 
                 // refresh fields when the RCM list changes
-                InfoPanel.this.rcmList.addActionListener(actionEvent -> {
-                    this.refresh();
-                });
+                InfoPanel.this.rcmList.addActionListener(actionEvent -> this.refresh());
 
                 // title label wrapper panel
                 JPanel titleWrapper = new JPanel();
@@ -264,7 +267,7 @@ class RMOSPanel extends JPanel implements Observer {
             /**
              * Creates all three chart panels and sets their dimensions.
              */
-            public void createChartPanels() {
+            private void createChartPanels() {
                 itemsChart = createChart(createDataset(0), "Total Items Collected");
                 itemsChartPanel = new ChartPanel(itemsChart);
                 itemsChartPanel.setPreferredSize(new Dimension(300,300));

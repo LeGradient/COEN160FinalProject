@@ -287,7 +287,8 @@ public class RecyclingMachine extends Observable {
      * Recycles all the items from a session and stores transactions in the database for each of them.
      */
     public void submitSession() {
-        assert this.isSession();
+        boolean isSession = this.isSession();
+        assert isSession;
         this.isSession = false;
         for (RecyclableItem item : sessionItems) {
             recycleItem(item);
@@ -341,7 +342,8 @@ public class RecyclingMachine extends Observable {
      * @return  The amount of money paid directly to the user.
      */
     public double payOut() {
-        assert this.isSession();
+        boolean isSession = this.isSession();
+        assert isSession;
         double owedValue = 0;
 
         // calculate the total owed value and pay it out

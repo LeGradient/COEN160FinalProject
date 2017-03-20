@@ -27,7 +27,8 @@ public class TestMain {
 
         // verify that a SQLITE database exists in the expected directory
         File db = new File("TransactionRecords.db");
-        assert(db.exists());
+        boolean dbExists = db.exists();
+        assert(dbExists);
 
         // instantiate an RCM and item and test stuff
         HashMap<String, Double> prices = new HashMap<>();

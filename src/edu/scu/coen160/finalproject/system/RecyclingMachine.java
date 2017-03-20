@@ -145,11 +145,17 @@ public class RecyclingMachine extends Observable {
      * @param money The amount of money to add to the RCM.
      */
     public void addMoney(double money) {
-        if (this.money <= 0 || this.money - money <= 0) {
-            this.money = 0;
-            return;
-        }
         this.money += money;
+        setChanged();
+        notifyObservers();
+    }
+
+    /**
+     * Sets the money of the RCM. Notifies observers of an update.
+     * @param money The amount of money to set.
+     */
+    public void setMoney(double money) {
+        this.money = money;
         setChanged();
         notifyObservers();
     }
@@ -344,7 +350,7 @@ public class RecyclingMachine extends Observable {
         if (this.money - owedValue < 0) {
             String temp = payCoupon(owedValue - this.money);
             owedValue = this.money;
-            addMoney(-getMoney());
+            setMoney(0);
             result = "$" + twoDigits.format(owedValue) + " paid directly; $" + temp + " as coupon";
             return result;
         }

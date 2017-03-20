@@ -8,6 +8,8 @@ import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.block.BlockBorder;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultKeyedValues2DDataset;
 
 import javax.swing.*;
@@ -218,46 +220,70 @@ class RMOSPanel extends JPanel implements Observer {
          * information in bar chart form.
          */
         private class StatisticsPanel extends JPanel {
+
+            /**
+             * Chart to show the total items collected.
+             */
             JFreeChart itemsChart;
+
+            /**
+             * Chart to show the total weight collected.
+             */
             JFreeChart weightChart;
+
+            /**
+             * Chart to show the total value issued.
+             */
             JFreeChart valueChart;
 
+            /**
+             * Panel to hold items chart.
+             */
             ChartPanel itemsChartPanel;
+
+            /**
+             * Panel to hold weight chart.
+             */
             ChartPanel weightChartPanel;
+
+            /**
+             * Panel to hold value chart.
+             */
             ChartPanel valueChartPanel;
 
             private StatisticsPanel() {
-                DefaultKeyedValues2DDataset itemsDataset = createDataset(0);
-                itemsChart = createChart(itemsDataset);
-                itemsChartPanel = new ChartPanel(itemsChart, false);
+                this.setLayout(new GridLayout(0, 3));
 
-
-                DefaultKeyedValues2DDataset weightDataset = createDataset(1);
-                weightChart = createChart(weightDataset);
-                weightChartPanel = new ChartPanel(weightChart, false);
-
-                DefaultKeyedValues2DDataset valueDataset = createDataset(2);
-                valueChart = createChart(valueDataset);
-                valueChartPanel = new ChartPanel(valueChart, false);
+                createChartPanels();
 
                 add(itemsChartPanel);
                 add(weightChartPanel);
                 add(valueChartPanel);
-
-                InfoPanel.this.rcmList.addActionListener(actionEvent -> {
-                    this.refresh();
-                });
             }
 
-            private void refresh() {
-                itemsChart = createChart(createDataset(0));
+            /**
+             * Creates all three chart panels and sets their dimensions.
+             */
+            public void createChartPanels() {
+                itemsChart = createChart(createDataset(0), "Total Items Collected");
                 itemsChartPanel = new ChartPanel(itemsChart);
+                itemsChartPanel.setPreferredSize(new Dimension(300,300));
 
-                weightChart = createChart(createDataset(1));
+                weightChart = createChart(createDataset(1), "Total Weight Collected");
                 weightChartPanel = new ChartPanel(weightChart);
+                weightChartPanel.setPreferredSize(new Dimension(300,300));
 
-                valueChart = createChart(createDataset(2));
+                valueChart = createChart(createDataset(2), "Total Value Issued");
                 valueChartPanel = new ChartPanel(valueChart);
+                valueChartPanel.setPreferredSize(new Dimension(300,300));
+            }
+
+            /**
+             * Called by top-level RMOS UI on observer update.
+             * Updates graphs with latest data from RCMs.
+             */
+            private void refresh() {
+                createChartPanels();
 
                 this.removeAll();
                 add(itemsChartPanel);
@@ -265,9 +291,16 @@ class RMOSPanel extends JPanel implements Observer {
                 add(valueChartPanel);
             }
 
-            private JFreeChart createChart(DefaultKeyedValues2DDataset dataset) {
+            /**
+             * Creates charts with the provided data and title.
+             *
+             * @param dataset   Data to use for the chart.
+             * @param title     Title of the chart.
+             * @return          The newly created chart.
+             */
+            private JFreeChart createChart(DefaultCategoryDataset dataset, String title) {
                 JFreeChart chart = ChartFactory.createBarChart(
-                        "STATISTICS", null /* x-axis label*/,
+                        title, null /* x-axis label*/,
                         null /* y-axis label */, dataset);
                 chart.setBackgroundPaint(Color.white);
                 CategoryPlot plot = (CategoryPlot) chart.getPlot();
@@ -279,21 +312,24 @@ class RMOSPanel extends JPanel implements Observer {
                 return chart;
             }
 
-            private DefaultKeyedValues2DDataset createDataset(int typeOfChart) {
+            /**
+             * Creates datasets using the data from the RCMs.
+             * @param typeOfChart   Specifies which data to look at (items/weight/value).
+             * @return              The dataset.
+             */
+            private DefaultCategoryDataset createDataset(int typeOfChart) {
+                DefaultCategoryDataset dataset = new DefaultCategoryDataset();
                 if (typeOfChart == 0) {
-                    DefaultKeyedValues2DDataset dataset = new DefaultKeyedValues2DDataset();
-                    dataset.addValue(RMOS.totalItemsCollected(0), "RCM1", "Total Items Collected");
-                    dataset.addValue(RMOS.totalItemsCollected(1), "RCM2", "Total Items Collected");
+                    dataset.addValue(RMOS.totalItemsCollected(0), "RCM1", "");
+                    dataset.addValue(RMOS.totalItemsCollected(1), "RCM2", "");
                     return dataset;
                 } else if (typeOfChart == 1) {
-                    DefaultKeyedValues2DDataset dataset = new DefaultKeyedValues2DDataset();
-                    dataset.addValue(RMOS.totalWeightCollected(0), "RCM1", "Total Weight Collected");
-                    dataset.addValue(RMOS.totalWeightCollected(1), "RCM2", "Total Weight Collected");
+                    dataset.addValue(RMOS.totalWeightCollected(0), "RCM1", "");
+                    dataset.addValue(RMOS.totalWeightCollected(1), "RCM2", "");
                     return dataset;
                 } else {
-                    DefaultKeyedValues2DDataset dataset = new DefaultKeyedValues2DDataset();
-                    dataset.addValue(RMOS.totalValueIssued(0), "RCM1", "Total Value Issued");
-                    dataset.addValue(RMOS.totalValueIssued(1), "RCM2", "Total Value Issued");
+                    dataset.addValue(RMOS.totalValueIssued(0), "RCM1", "");
+                    dataset.addValue(RMOS.totalValueIssued(1), "RCM2", "");
                     return dataset;
                 }
             }

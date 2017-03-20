@@ -40,7 +40,7 @@ public class RecyclingUI extends JFrame {
         tabs.addTab("RCM 1", myRCMPanel2);
         tabs.addTab("RMOS", myRMOSPanel);
 
-        setSize(1920, 800);
+        setSize(1200, 800);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setVisible(true);

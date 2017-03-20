@@ -319,6 +319,13 @@ class RMOSPanel extends JPanel implements Observer {
              */
             private DefaultCategoryDataset createDataset(int typeOfChart) {
                 DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+                /*
+                    0 = items chart
+                    1 = weight chart
+                    2 = value chart
+                */
+
                 if (typeOfChart == 0) {
                     dataset.addValue(RMOS.totalItemsCollected(0), "RCM1", "");
                     dataset.addValue(RMOS.totalItemsCollected(1), "RCM2", "");

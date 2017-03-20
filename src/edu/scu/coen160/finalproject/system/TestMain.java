@@ -33,7 +33,7 @@ public class TestMain {
         HashMap<String, Double> prices = new HashMap<>();
         prices.put("plastic", 10.00);
         prices.put("rubber", 15.00);
-        RecyclingMachine rcm = new RecyclingMachine(prices, 1000, 1, "Santa Clara");
+        RecyclingMachine rcm = new RecyclingMachine(prices, 1000, 100, "Santa Clara");
         RecyclableItem item = new RecyclableItem(5, "plastic");
 
         ArrayList<RecyclingMachine> machines = new ArrayList<>();

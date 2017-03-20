@@ -99,8 +99,12 @@ class RCMPanel extends JPanel implements Observer {
     /**
      * Submits a recycled item. Blanks the receipt.
      */
-    private void submitItem() {
-        myRCM.recycleItem(myItem);
+    private void submitItem() throws IllegalArgumentException {
+        try {
+            myRCM.recycleItem(myItem);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(e);
+        }
         paymentLabel.setText(myRCM.payOut(myRCM.calculateItemPrice(myItem)));
         receipt.setText("Receipt\n");
     }
@@ -173,14 +177,20 @@ class RCMPanel extends JPanel implements Observer {
                 myRCM.startSession();
                 toggleButtons();
                 toggleSessionButton.setActionCommand("cancel");
+                weighButton.setEnabled(true);
+                weighButton.setActionCommand("weigh");
                 paymentLabel.setText("");
+                errorLabel.setText("");
             } else {
                 // we are canceling a session; wipe the receipt area and toggle buttons
                 myRCM.cancelSession();
                 receipt.setText("Receipt\n");
                 toggleButtons();
+                weighButton.setEnabled(true);
+                weighButton.setActionCommand("weigh");
                 toggleSessionButton.setActionCommand("start");
                 paymentLabel.setText("");
+                errorLabel.setText("");
             }
         });
 
@@ -192,7 +202,15 @@ class RCMPanel extends JPanel implements Observer {
         endSessionButton.addActionListener(actionEvent -> {
             // if we are in a session, submit it, toggle buttons, pay out, and wipe the receipt
             if (myRCM.isSession()) {
-                myRCM.submitSession();
+                try {
+                    myRCM.submitSession();
+                } catch (IllegalArgumentException e) {
+                    errorLabel.setText(e.getMessage());
+                    cancelButton.setEnabled(false);
+                    endSessionButton.setEnabled(false);
+                    weighButton.setEnabled(false);
+                    return;
+                }
                 toggleButtons();
                 paymentLabel.setText(myRCM.payOut());
                 receipt.setText("Receipt\n");
@@ -234,7 +252,16 @@ class RCMPanel extends JPanel implements Observer {
                 }
             } else {
                 // we are submitting an item, so submit it and toggle the buttons
-                submitItem();
+                try {
+                    submitItem();
+                } catch (IllegalArgumentException e) {
+                    errorLabel.setText(e.getMessage());
+                    cancelButton.setEnabled(true);
+                    weighButton.setEnabled(false);
+                    endSessionButton.setEnabled(false);
+                    toggleSessionButton.setEnabled(false);
+                    return;
+                }
                 toggleSessionButton.setEnabled(true);
                 cancelButton.setEnabled(false);
                 weighButton.setActionCommand("weigh");
@@ -253,8 +280,10 @@ class RCMPanel extends JPanel implements Observer {
             cancelButton.setEnabled(false);
             weighButton.setText("Weigh Item");
             weighButton.setActionCommand("weigh");
+            weighButton.setEnabled(true);
             toggleSessionButton.setEnabled(true);
             paymentLabel.setText("");
+            errorLabel.setText("");
         });
 
         // set up the top panel

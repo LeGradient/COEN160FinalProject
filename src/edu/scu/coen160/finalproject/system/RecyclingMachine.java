@@ -145,6 +145,10 @@ public class RecyclingMachine extends Observable {
      * @param money The amount of money to add to the RCM.
      */
     public void addMoney(double money) {
+        if (this.money <= 0 || this.money - money <= 0) {
+            this.money = 0;
+            return;
+        }
         this.money += money;
         setChanged();
         notifyObservers();
@@ -298,11 +302,15 @@ public class RecyclingMachine extends Observable {
     /**
      * Recycles all the items from a session and stores transactions in the database for each of them.
      */
-    public void submitSession() {
+    public void submitSession() throws IllegalArgumentException {
         boolean isSession = this.isSession();
         assert isSession;
         for (RecyclableItem item : sessionItems) {
-            recycleItem(item);
+            try {
+                recycleItem(item);
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException(e);
+            }
         }
         this.isSession = false;
     }
@@ -328,20 +336,22 @@ public class RecyclingMachine extends Observable {
      * @param price The price to pay out.
      * @return      The amount of money paid directly to the user.
      */
-    public double payOut(double price) {
+    public String payOut(double price) {
         double owedValue = price;
+        String result;
 
         // if we don't have enough money, pay out a coupon
         if (this.money - owedValue < 0) {
-            payCoupon(owedValue - this.money);
+            String temp = payCoupon(owedValue - this.money);
             owedValue = this.money;
-            this.money = 0;
-            return owedValue;
+            addMoney(-getMoney());
+            result = "$" + twoDigits.format(owedValue) + " paid directly; $" + temp + " as coupon";
+            return result;
         }
 
         this.money -= owedValue;
-
-        return owedValue;
+        result = "$" + owedValue + " paid";
+        return result;
     }
 
     /**
@@ -350,7 +360,7 @@ public class RecyclingMachine extends Observable {
      *
      * @return  The amount of money paid directly to the user.
      */
-    public double payOut() {
+    public String payOut() {
         boolean isSession = this.isSession();
         assert isSession;
         double owedValue = 0;
@@ -362,8 +372,8 @@ public class RecyclingMachine extends Observable {
         return payOut(owedValue);
     }
 
-    private void payCoupon(double amount) {
-        // TODO pay out a coupon of value amount
+    private String payCoupon(double amount) {
+        return twoDigits.format(amount);
     }
 
     /**

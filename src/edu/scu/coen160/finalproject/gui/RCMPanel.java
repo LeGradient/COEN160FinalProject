@@ -101,7 +101,7 @@ class RCMPanel extends JPanel implements Observer {
      */
     private void submitItem() {
         myRCM.recycleItem(myItem);
-        myRCM.payOut(myRCM.calculateItemPrice(myItem));
+        paymentLabel.setText(myRCM.payOut(myRCM.calculateItemPrice(myItem)));
         receipt.setText("Receipt\n");
     }
 
@@ -173,12 +173,14 @@ class RCMPanel extends JPanel implements Observer {
                 myRCM.startSession();
                 toggleButtons();
                 toggleSessionButton.setActionCommand("cancel");
+                paymentLabel.setText("");
             } else {
                 // we are canceling a session; wipe the receipt area and toggle buttons
                 myRCM.cancelSession();
                 receipt.setText("Receipt\n");
                 toggleButtons();
                 toggleSessionButton.setActionCommand("start");
+                paymentLabel.setText("");
             }
         });
 
@@ -192,7 +194,7 @@ class RCMPanel extends JPanel implements Observer {
             if (myRCM.isSession()) {
                 myRCM.submitSession();
                 toggleButtons();
-                System.out.println(myRCM.payOut());
+                paymentLabel.setText(myRCM.payOut());
                 receipt.setText("Receipt\n");
                 toggleSessionButton.setActionCommand("start");
             }
@@ -226,6 +228,7 @@ class RCMPanel extends JPanel implements Observer {
                     cancelButton.setEnabled(true);
                     weighButton.setActionCommand("submit");
                     weighButton.setText("Submit Item");
+                    paymentLabel.setText("");
                 } else {
                     myRCM.addItemToSession(myItem);
                 }
@@ -249,7 +252,9 @@ class RCMPanel extends JPanel implements Observer {
             receipt.setText("Receipt\n");
             cancelButton.setEnabled(false);
             weighButton.setText("Weigh Item");
+            weighButton.setActionCommand("weigh");
             toggleSessionButton.setEnabled(true);
+            paymentLabel.setText("");
         });
 
         // set up the top panel

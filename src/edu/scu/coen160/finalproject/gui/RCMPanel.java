@@ -37,6 +37,16 @@ class RCMPanel extends JPanel implements Observer {
     private JButton cancelButton;
 
     /**
+     * A label to show the final payments.
+     */
+    private JLabel paymentLabel;
+
+    /**
+     * A label to show error text.
+     */
+    private JLabel errorLabel;
+
+    /**
      * A text area to serve as a receipt for the recycled items.
      */
     private JTextArea receipt;
@@ -45,6 +55,11 @@ class RCMPanel extends JPanel implements Observer {
      * A text area that displays information about the RCM.
      */
     private JTextArea info;
+
+    /**
+     * A panel for the top of the RCM window.
+     */
+    private JPanel topPanel;
 
     /**
      * A panel for the center of the RCM window.
@@ -138,6 +153,15 @@ class RCMPanel extends JPanel implements Observer {
         // add the prices to the info area
         info.append(myRCM.printPrices());
 
+        // set up the label to show the final price
+        paymentLabel = new JLabel();
+        paymentLabel.setFont(new Font(paymentLabel.getFont().getName(), Font.PLAIN, 30));
+
+        // set up the error label
+        errorLabel = new JLabel();
+        errorLabel.setFont(new Font(errorLabel.getFont().getName(), Font.PLAIN, 30));
+        errorLabel.setForeground(Color.RED);
+
         // set up the button to start and/or cancel sessions
         toggleSessionButton = new JButton("Start Session");
         toggleSessionButton.setActionCommand("start");
@@ -226,13 +250,21 @@ class RCMPanel extends JPanel implements Observer {
             toggleSessionButton.setEnabled(true);
         });
 
+        // set up the top panel
+        topPanel = new JPanel();
+        topPanel.setLayout(new FlowLayout());
+
         // set up the center panel
         centerPanel = new JPanel();
-        centerPanel.setLayout(new FlowLayout());
+        centerPanel.setLayout(new GridLayout(2,1));
 
-        // add the weigh and cancel buttons to the center panel
-        centerPanel.add(weighButton);
-        centerPanel.add(cancelButton);
+        // add the weigh and cancel buttons to the top panel
+        topPanel.add(weighButton);
+        topPanel.add(cancelButton);
+
+        // add the labels to the center panel
+        centerPanel.add(paymentLabel);
+        centerPanel.add(errorLabel);
 
         // set up the bottom panel
         bottomPanel = new JPanel();
@@ -243,8 +275,9 @@ class RCMPanel extends JPanel implements Observer {
         bottomPanel.add(endSessionButton);
 
         // add all the components to this panel
-        this.add(centerPanel, BorderLayout.PAGE_START);
+        this.add(topPanel, BorderLayout.PAGE_START);
         this.add(bottomPanel, BorderLayout.PAGE_END);
+        this.add(centerPanel, BorderLayout.CENTER);
         this.add(info, BorderLayout.LINE_START);
         this.add(receipt, BorderLayout.LINE_END);
     }

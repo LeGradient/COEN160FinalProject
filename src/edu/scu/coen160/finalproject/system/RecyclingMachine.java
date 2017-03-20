@@ -245,7 +245,7 @@ public class RecyclingMachine extends Observable {
     public void recycleItem(RecyclableItem item) throws IllegalArgumentException {
         // check if the machine has the capacity to store the new item.
         if (getWeight() + item.getWeight() > getCapacity()) {
-            throw new IllegalArgumentException("Recycling machine capacity exceeded");
+            throw new IllegalArgumentException("Recycling machine capacity exceeded; contact administrator to empty.");
         }
 
         // calculate the price of the item
@@ -257,7 +257,7 @@ public class RecyclingMachine extends Observable {
             this.sessionRecords.add(record);
             this.sessionItems.add(item);
         } else {
-            setWeight(getWeight() + item.getWeight());
+            setWeight(item.getWeight());
             record.writeToTable(this.getTableName());
         }
     }
@@ -301,12 +301,14 @@ public class RecyclingMachine extends Observable {
      * Empties the RCM.
      *
      * Sets the current weight of the RCM to zero and stores a transaction in the database to indicate when the
-     * RCM was emptied.
+     * RCM was emptied. Notifies observers.
      */
     public void empty() {
-        setWeight(0);
+        this.weight = 0;
         TransactionRecord record = new TransactionRecord(null, 0);
         record.writeToTable(this.getTableName());
+        setChanged();
+        notifyObservers("emptied");
     }
 
     /**

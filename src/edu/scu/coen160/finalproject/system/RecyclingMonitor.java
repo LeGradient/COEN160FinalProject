@@ -49,32 +49,67 @@ public class RecyclingMonitor {
         this.isLoggedIn = false;
     }
 
-    // GETTERS & SETTERS
-
+    /**
+     * Gets the current used weight of an RCM.
+     * @param index The index of the RCM to check.
+     * @return      The current weight used of that RCM.
+     */
     public double getWeight(int index) {
         return machines.get(index).getWeight();
     }
 
+    /**
+     * Gets the overall capacity of an RCM.
+     * @param index The index of the RCM to check.
+     * @return      The overall capacity of that RCM.
+     */
     public double getCapacity(int index) {
         return machines.get(index).getCapacity();
     }
 
+    /**
+     * Empties an RCM.
+     *
+     * @param index The index of the RCM to empty.
+     */
     public void empty(int index) {
         machines.get(index).empty();
     }
 
+    /**
+     * Gets the amount of money in an RCM.
+     *
+     * @param index The RCM to check.
+     * @return      The amount of money left in that RCM.
+     */
     public double getMoney(int index) {
         return machines.get(index).getMoney();
     }
 
+    /**
+     * Adds money to an RCM.
+     * @param index The RCM to add money to.
+     * @param money The amount of money to add.
+     */
     public void addMoney(int index, double money) {
         machines.get(index).addMoney(money);
     }
 
+    /**
+     * Sets the price of a material for an RCM.
+     * @param index     The RCM to update.
+     * @param material  The material to update.
+     * @param price     The price to set.
+     */
     public void setPrice(int index, String material, double price) {
         machines.get(index).setPrice(material, price);
     }
 
+    /**
+     * Gets the names of all the RCMs.
+     *
+     * @return  An array of Strings containing the names of every RCM for this RMOS.
+     */
     public String[] getMachineNames() {
         ArrayList<String> names = new ArrayList<>();
         for (RecyclingMachine machine : machines) {
@@ -82,9 +117,6 @@ public class RecyclingMonitor {
         }
         return names.toArray(new String[0]);
     }
-
-
-    // OTHER METHODS
 
     /**
      * Allows user to login to the RMOS.

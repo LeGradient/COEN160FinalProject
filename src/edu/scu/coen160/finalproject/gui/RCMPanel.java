@@ -98,6 +98,8 @@ class RCMPanel extends JPanel implements Observer {
 
     /**
      * Submits a recycled item. Blanks the receipt.
+     *
+     * @throws IllegalArgumentException if RCM lacks the capacity to recycle the item.
      */
     private void submitItem() throws IllegalArgumentException {
         try {

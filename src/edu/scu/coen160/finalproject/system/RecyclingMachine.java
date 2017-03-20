@@ -307,6 +307,8 @@ public class RecyclingMachine extends Observable {
 
     /**
      * Recycles all the items from a session and stores transactions in the database for each of them.
+     *
+     * @throws IllegalArgumentException if RCM lacks capacity to recycle the items.
      */
     public void submitSession() throws IllegalArgumentException {
         boolean isSession = this.isSession();

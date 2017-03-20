@@ -253,13 +253,8 @@ public class RecyclingMachine extends Observable {
 
         // create a new transaction with the item and its price,  write it to the DB, and update the weight of the RCM
         TransactionRecord record = new TransactionRecord(item, price);
-        if (this.isSession()) {
-            this.sessionRecords.add(record);
-            this.sessionItems.add(item);
-        } else {
-            setWeight(item.getWeight());
-            record.writeToTable(this.getTableName());
-        }
+        setWeight(item.getWeight());
+        record.writeToTable(this.getTableName());
     }
 
     /**
@@ -284,18 +279,32 @@ public class RecyclingMachine extends Observable {
     }
 
     /**
+     * Adds an item to the current session.
+     *
+     * Adds the specified item to the list of current items in this session and adds a record for it to the
+     * list of records for this session.
+     *
+     * @param item  The item to add to the current session.
+     */
+    public void addItemToSession(RecyclableItem item) {
+        boolean isSession = this.isSession();
+        assert isSession;
+        this.sessionItems.add(item);
+        double price = calculateItemPrice(item);
+        TransactionRecord record = new TransactionRecord(item, price);
+        this.sessionRecords.add(record);
+    }
+
+    /**
      * Recycles all the items from a session and stores transactions in the database for each of them.
      */
     public void submitSession() {
         boolean isSession = this.isSession();
         assert isSession;
-        this.isSession = false;
         for (RecyclableItem item : sessionItems) {
             recycleItem(item);
         }
-        for (TransactionRecord record : sessionRecords) {
-            record.writeToTable(this.getTableName());
-        }
+        this.isSession = false;
     }
 
     /**

@@ -192,7 +192,7 @@ class RCMPanel extends JPanel implements Observer {
             if (myRCM.isSession()) {
                 myRCM.submitSession();
                 toggleButtons();
-                myRCM.payOut();
+                System.out.println(myRCM.payOut());
                 receipt.setText("Receipt\n");
                 toggleSessionButton.setActionCommand("start");
             }
@@ -226,6 +226,8 @@ class RCMPanel extends JPanel implements Observer {
                     cancelButton.setEnabled(true);
                     weighButton.setActionCommand("submit");
                     weighButton.setText("Submit Item");
+                } else {
+                    myRCM.addItemToSession(myItem);
                 }
             } else {
                 // we are submitting an item, so submit it and toggle the buttons
